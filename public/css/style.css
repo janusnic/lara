@@ -895,9 +895,42 @@
 	{
 		text-align: center;
 	}
-	
-	.homepage #content header h2
+		.homepage #blogcontent
 	{
+		text-align: left;
+	}
+
+
+	 ul.pagination
+		{
+			margin: 0;
+			padding: 0;
+			text-align: center;
+			display: inline-block;
+		}
+
+		ul.pagination > li
+		{
+			display: inline-block;
+		}
+		
+			ul.pagination > li > a
+			{
+				display: inline-block;
+				padding: 1.5em 1.5em;
+				letter-spacing: 0.06em;
+				text-decoration: none;
+				text-transform: uppercase;
+				font-size: 1.1em;
+				outline: 0;
+				color: #F0F;
+			}
+
+
+
+	.homepage #blogcontent header h2
+	{
+		text-align: center;
 	}
 
 	#sidebar h2

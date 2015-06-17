@@ -19,3 +19,5 @@ Route::get('/', function () {
     return view('home.index');
 });
 
+Route::get('blog', 'BlogController@index');
+Route::get('blog/{slug}', 'BlogController@showPost');
