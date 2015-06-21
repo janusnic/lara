@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /*
 |--------------------------------------------------------------------------
@@ -10,6 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+//Route::resource('posts', 'PostsController');
+Route::resource('blog', 'PostsController');
+Route::get('/hel', function () {
+    return 'Hello world!';
+});
 
 Route::get('/wel', function () {
     return view('welcome');
@@ -19,5 +24,14 @@ Route::get('/', function () {
     return view('home.index');
 });
 
-Route::get('blog', 'BlogController@index');
-Route::get('blog/{slug}', 'BlogController@showPost');
+Route::get('posts', function()
+{
+    //return 'all posts';
+    
+    $posts = App\Post::all();
+ 
+    return view('posts.index', ['posts', $posts]);
+});
+//Route::get('posts', 'PostsController@index');
+Route::get('blog', 'PostsController@index');
+//Route::get('blog/{slug}', 'BlogController@showPost');

@@ -1,6 +1,4 @@
 @extends('layouts.front')
-<!-- Featured -->
-
 @section('content')
 	<div id="main">
 		<div class="container">

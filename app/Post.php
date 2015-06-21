@@ -1,15 +1,18 @@
 <?php
 
-namespace debug;
+namespace App;
+
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Post extends Model
 {
+    //
+  protected $table = 'posts';
   protected $dates = ['published_at'];
 
-  public function setTitleAttribute($value)
+    public function setTitleAttribute($value)
   {
     $this->attributes['title'] = $value;
 

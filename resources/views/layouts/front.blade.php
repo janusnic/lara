@@ -11,7 +11,7 @@
 	<!-- Header -->
 		@include('layouts.partials.header') 
 	
-	<!-- Featured -->
+	
 	@yield('featured')	
 	<!-- Main -->
 	@yield('content')

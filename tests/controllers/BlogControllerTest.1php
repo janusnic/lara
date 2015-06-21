@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
+class BlogControllerTest extends TestCase
+{
+    /**
+     * A basic functional test example.
+     *
+     * @return void
+     */
+    public function testIndex()
+    {
+        $response = $this->call('GET', 'blog');
+        $this->assertViewHas('posts');
+
+        // getData() returns all vars attached to the response.
+    $posts = $response->original->getData()['posts'];
+ 
+    $this->assertInstanceOf('Illuminate\Pagination\LengthAwarePaginator', $posts);
+
+    }
+}

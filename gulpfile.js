@@ -1,5 +1,5 @@
 var elixir = require('laravel-elixir');
-
+//elixir.config.publicDir = 'public';
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management
@@ -12,5 +12,37 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.less('app.less');
+    //mix.less('app.less');
+    //mix.sass('app.scss');
+/*
+    mix.styles([
+    	'vendor/skel-noscript.css',
+    	'app.css',
+    	'vendor/style-desktop.css',
+    	],'public/output/final.css','public/css');
+
+    mix.styles([
+    	'skel-noscript.css',
+    	'app.css',
+    	'style-desktop.css',
+    	],null,'public/css');*/
+/*
+    mix.scripts([
+    	'skel.min.js',
+    	'skel-panels.min.js',
+    	'init.js',
+    	],'public/output/scripts.js','public/js');
+
+    mix.scripts([
+    	'skel.min.js',
+    	'skel-panels.min.js',
+    	'init.js',
+    	],null,'public/js');*/
+    //mix.version("public/css/all.css");
+    //mix.version("public/css/skel-noscript.css");
+	//mix.version("public/css/style-desktop.css");
+    //mix.version("public/js/skel.min.js");
+	//mix.version("public/js/skel-panels.min.js");
+	//mix.version("public/js/all.js");
+    //mix.phpUnit();
 });
