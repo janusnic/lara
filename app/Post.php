@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 class Post extends Model
 {
     //
+  protected $softDelete = true;
+
+  protected $guarded = array();  // Important
   protected $table = 'posts';
   protected $dates = ['published_at'];
 

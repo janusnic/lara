@@ -12,6 +12,7 @@
 */
 //Route::resource('posts', 'PostsController');
 Route::resource('blog', 'PostsController');
+Route::resource('adm', 'cms\PostsController');
 Route::get('/hel', function () {
     return 'Hello world!';
 });
@@ -34,4 +35,10 @@ Route::get('posts', function()
 });
 //Route::get('posts', 'PostsController@index');
 Route::get('blog', 'PostsController@index');
+Route::get('blog.cms', 'cms\PostsController@index');
 //Route::get('blog/{slug}', 'BlogController@showPost');
+Route::get('/', function () {
+    return view('home.index');
+});
+
+Route::get('adm', 'cms\PostsController@index');
