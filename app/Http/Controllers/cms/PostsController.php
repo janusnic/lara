@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Http\Requests\PostForm;
 use Carbon\Carbon;
 
 class PostsController extends Controller
@@ -16,16 +17,28 @@ class PostsController extends Controller
      *
      * @return Response
      */
+
+    /*
     public function index()
     {
         //
-        $posts = Post::where('published_at', '<=', Carbon::now())
+        // $posts = Post::where('published_at', '<=', Carbon::now())
+        $posts = Post::latest('published_at')->published()
             ->orderBy('published_at', 'desc')
             ->paginate(config('blog.posts_per_page'));
 
         return view('cms.index', compact('posts'));
         //return view('cms.index');
     }
+    */
+    public function index(Post $postModel)
+    {
+        
+        $posts = $postModel->getPublishedPosts();
+        return view('cms.index', compact('posts'));
+        
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -34,9 +47,8 @@ class PostsController extends Controller
      */
     public function create()
     {
-        //
-        $posts = Post::all();
-        return view('cms.create',compact('posts'));
+        // $posts = Post::all();
+        return view('cms.create');
     }
 
     /**
@@ -44,15 +56,31 @@ class PostsController extends Controller
      *
      * @return Response
      */
+   /*
     public function store(Request $request)
     {
         //
         $post=$request->all();
+        //$post['published_at'] = Carbon::now();
         Post::create($post);
         //Session::flash('flash_message', 'Task successfully added!');
-        return redirect('adm');
+        return redirect('adm/create')->with('message', 'Post saved');
     }
-
+   */
+    public function store(PostForm $request)
+    {
+    $post = new \App\Post;
+    //$post=$request->all();
+    //print_r($request->all());die;
+    $post['title'] = $request['title'];
+    $post['published_at'] = $request['published_at'];
+    $post['content'] = $request['content'];
+    //Post::create($post);
+ 
+    $post->save();
+ 
+    return redirect()->route('adm.create')->with('message', 'Post saved');
+    }
     /**
      * Display the specified resource.
      *
@@ -88,6 +116,7 @@ class PostsController extends Controller
      * @param  int  $id
      * @return Response
      */
+    /*
     public function update($id, Request $request)
     {
         //
@@ -98,6 +127,19 @@ class PostsController extends Controller
         $post->fill($input)->save();
      
         return redirect()->back();
+    }
+    */
+
+    public function update($id, Request $request)
+    {
+        //
+        $post = Post::findOrFail($id);
+ 
+        $input = $request->all();
+     
+        $post->fill($input)->save();
+     
+        return redirect()->route('adm.index')->with('message', 'Post saved');
     }
 
     /**

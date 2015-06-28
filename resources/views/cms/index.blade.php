@@ -6,7 +6,7 @@
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-default">
-				<div class="panel-heading">Home</div>
+				<div class="panel-heading"><a href="{{ route('adm.create') }}" class="btn btn-info">Add new post</a> | Home</div>
 
 				<div class="panel-body">
 					<section>
@@ -25,7 +25,7 @@
 					    </div>
 					    <div class="col-md-6 text-right">
 					    	
-					    	<a href="{{ route('adm.index') }}" class="btn btn-info">Back to all tasks</a>
+					    	<a href="{{ route('adm.index') }}" class="btn btn-info">Back to all posts</a>
 					        <a href="{{ route('adm.edit', $post->id) }}" class="btn btn-primary">Edit</a>
 					        {!! Form::open([
 					            'method' => 'DELETE',

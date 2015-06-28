@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <div class="panel-heading">Home</div>
+                <div class="panel-heading"><a href="{{ route('adm.index') }}" class="btn btn-info">Back to all posts</a> | Home | </div>
 
 
                 <div class="panel-body">
@@ -14,19 +14,7 @@
                         'route' => ['adm.update', $post->id]
                     ]) !!}
                     
-                            <div class="form-group">
-                                {!! Form::text('title', null, ["class" => "form-control"]) !!}
-                            </div>
- 
-                            <div class="form-group">
-                                {!! Form::textarea('content', null,
-                                        ['class'=>'form-control', 'placeholder'=>'Content'])
-                                !!}
-                            </div>
- 
-                            <div class="form-group">
-                                {!! Form::submit('Send', ["class" => "btn btn-success btn-block"]) !!}
-                            </div>
+                        @include('cms._form')
  
                     {!! Form::close() !!}
                 </div>
