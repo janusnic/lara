@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Auth;
 use App\Post;
 use App\Http\Requests\PostForm;
 use Carbon\Carbon;
@@ -31,12 +32,17 @@ class PostsController extends Controller
         //return view('cms.index');
     }
     */
-    public function index(Post $postModel)
+
+    public function __construct()
     {
-        
-        $posts = $postModel->getPublishedPosts();
-        return view('cms.index', compact('posts'));
-        
+        $this->middleware('auth');
+        //$this->middleware('auth', ['except' => 'index']);
+    }
+    public function index()
+    {
+
+      return view('cms.index');
+
     }
 
 
@@ -48,7 +54,18 @@ class PostsController extends Controller
     public function create()
     {
         // $posts = Post::all();
+        /*if (Auth::guest())
+        {
+            return redirect('/');
+        }*/
         return view('cms.create');
+    }
+
+    public function postlist(Post $postModel)
+    {
+
+        $posts = $postModel->getPublishedPosts();
+        return view('cms.postlist', compact('posts'));
     }
 
     /**
@@ -76,9 +93,9 @@ class PostsController extends Controller
     $post['published_at'] = $request['published_at'];
     $post['content'] = $request['content'];
     //Post::create($post);
- 
+
     $post->save();
- 
+
     return redirect()->route('adm.create')->with('message', 'Post saved');
     }
     /**
@@ -92,7 +109,7 @@ class PostsController extends Controller
         //
         //return view('cmd.show');
         $post = Post::findOrFail($id);
- 
+
         return view('cms.show')->withPost($post);
     }
 
@@ -102,7 +119,7 @@ class PostsController extends Controller
      * @param  int  $id
      * @return Response
      */
-    
+
     public function edit($id)
     {
         //
@@ -121,11 +138,11 @@ class PostsController extends Controller
     {
         //
         $post = Post::findOrFail($id);
- 
+
         $input = $request->all();
-     
+
         $post->fill($input)->save();
-     
+
         return redirect()->back();
     }
     */
@@ -134,11 +151,11 @@ class PostsController extends Controller
     {
         //
         $post = Post::findOrFail($id);
- 
+
         $input = $request->all();
-     
+
         $post->fill($input)->save();
-     
+
         return redirect()->route('adm.index')->with('message', 'Post saved');
     }
 
@@ -152,9 +169,9 @@ class PostsController extends Controller
     {
         //
             $post = Post::findOrFail($id);
- 
+
             $post->delete();
-           
+
             return redirect()->route('adm.index');
 
     }
