@@ -42,6 +42,7 @@ Route::get('/', function () {
     return view('home.index');
 });
 
+Route::resource('users', 'UsersController');
 /*
 Route::get('posts', function()
 {
