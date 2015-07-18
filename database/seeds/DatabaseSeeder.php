@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Database\Seeds\UserTableSeeder;
 use Database\Seeds\RolesTableSeeder;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -15,15 +16,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
-
-        
+    
 
         // $this->call('UserTableSeeder');
 
         //Model::reguard();
         $this->call('UserTableSeeder');
         $this->call('RolesTableSeeder');
+        
         Model::reguard();
         $this->call('PostTableSeeder');
     }

@@ -139,6 +139,7 @@ return [
         Illuminate\Html\HtmlServiceProvider::class,
         Frozennode\Administrator\AdministratorServiceProvider::class,
         Efficiently\AuthorityController\AuthorityControllerServiceProvider::class,
+        Tsawler\Laravelfilemanager\LaravelFilemanagerServiceProvider::class,
 
         /*
          * Application Service Providers...

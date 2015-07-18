@@ -49,4 +49,8 @@ class Post extends Model
       $this->attributes['slug'] = Str::slug($value);
     }
   }
+  public function categories()
+  {
+    return $this->belongsToMany('App\Category')->withTimestamps();
+  }
 }

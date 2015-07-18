@@ -52,9 +52,12 @@ return array(
 	 *	)
 	 */
 	'menu' => array('Settings' => array('settings.site'),
-					'roles',
-					'users',
+					'Users manage' => array('roles',
+										'permissions',
+										'users',
+										),
 					'posts',
+					'categories',
 					),
 
 	/**

@@ -55,7 +55,24 @@ return array(
         'content' => array(
               'title' => 'Content',
               'type' => 'wysiwyg',
-          ),
+               /**'kcfinder' => array(
+               
+                * You can find all the default and configurable
+                * options here: http://kcfinder.sunhater.com/install
+                * in the Configuration -> Dynamic Settings paragraph
+                
+                'disabled' => false,   //this is the default way to enable, but
+                //'enabled' => true,   //you can also use enabled => true 
+                //'uploadURL' => '../../../../../uploads',   //this is the default 'public/uploads' folder
+                'uploadPath' => public_path(). '/uploads', //this is the default 'public/uploads' folder
+                //etc...
+            ),**/
+        ),
+        'categories' => array(
+             'title' => 'Category',
+             'type' => 'relationship',
+             'name_field' => 'name',
+        ),
        
 	),
 

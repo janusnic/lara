@@ -20,6 +20,14 @@
 			          <em class="posted">({{ $post->published_at->format('M jS Y g:ia') }})</em>
 			          
 			            {{ str_limit($post->content) }}
+
+			            @if ($post->categories->count() > 0)
+							<ul>
+							@foreach($post->categories as $category)
+							<li>{{ $category->name }}</li>
+							@endforeach
+							</ul>
+						@endif
 			          </p>
 			        </li>
 			      	@endforeach
