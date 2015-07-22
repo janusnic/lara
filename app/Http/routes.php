@@ -36,7 +36,8 @@ Route::resource('adm', 'cms\PostsController');
 // Blog area
 Route::resource('blog', 'PostsController');
 
-
+Route::get('rss', 'PostsController@rss');
+Route::get('sitemap', 'PostsController@siteMap');
 
 Route::get('/', function () {
     return view('home.index');

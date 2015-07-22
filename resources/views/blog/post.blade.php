@@ -17,11 +17,9 @@
 <div class="row">
 {!! nl2br(e($post->content)) !!}
     <hr>
-    <button class="btn btn-primary" onclick="history.go(-1)">
-      « Back
-    </button>
-
-    </div>    
+    </div> 
+ 
+        <button class="btn btn-primary" onclick="history.go(-1)">« Back</button>   
 				</article>
 			</div>
 					<!-- Sidebar -->
@@ -67,7 +65,12 @@
 							</ul>
 						</section>
 					</div>
-					
+						<div class="container">
+						  <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+						    @include('blog.partials.disqus')
+						  </div>
+						</div>
+					<hr>
 				</div>
 			</div>
 		</div>

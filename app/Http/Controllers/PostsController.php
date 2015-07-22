@@ -7,6 +7,8 @@ use App\Post;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use App\Services\RssFeed;
+use App\Services\SiteMap;
 
 class PostsController extends Controller
 {
@@ -36,11 +38,26 @@ class PostsController extends Controller
     }
    
  
-    public function showPost($slug)
+    public function show($slug)
      {
         $post = Post::whereSlug($slug)->firstOrFail();
 
         return view('blog.post')->withPost($post);
      }
 
+     public function rss(RssFeed $feed)
+    {
+    $rss = $feed->getRSS();
+
+    return response($rss)
+      ->header('Content-type', 'application/rss+xml');
+    }
+    
+    public function siteMap(SiteMap $siteMap)
+    {
+    $map = $siteMap->getSiteMap();
+
+    return response($map)
+      ->header('Content-type', 'text/xml');
+    }
 }

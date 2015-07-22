@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Database\Seeds\UserTableSeeder;
 use Database\Seeds\RolesTableSeeder;
-
+use Database\Seeds\CategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
     
 
         // $this->call('UserTableSeeder');
@@ -26,6 +27,8 @@ class DatabaseSeeder extends Seeder
         
         Model::reguard();
         $this->call('PostTableSeeder');
+        $this->call('CategorySeeder');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
 }
