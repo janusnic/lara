@@ -41,8 +41,9 @@ class PostsController extends Controller
     public function show($slug)
      {
         $post = Post::whereSlug($slug)->firstOrFail();
+        $comments = $post->comments;
 
-        return view('blog.post')->withPost($post);
+        return view('blog.post')->withPost($post)->withComments($comments);
      }
 
      public function rss(RssFeed $feed)

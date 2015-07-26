@@ -12,6 +12,7 @@
         "sunhater/kcfinder": "dev-master",
         "efficiently/authority-controller": "dev-master",
         "tsawler/laravel-filemanager": "dev-master",
+        
         "suin/php-rss-writer": "dev-master"
 
     },

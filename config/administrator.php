@@ -58,6 +58,7 @@ return array(
 										),
 					'posts',
 					'categories',
+					'comments',
 					),
 
 	/**

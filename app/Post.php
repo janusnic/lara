@@ -53,12 +53,15 @@ class Post extends Model
   {
     return $this->belongsToMany('App\Category')->withTimestamps();
   }
+  
   public function comments()
   {
-    return $this->morphMany('App\Comment', 'commentable');
+    return $this->hasMany('App\Comment','on_post');
   }
-
-
-
+  
+  public function author()
+  {
+    return $this->belongsTo('App\User','author_id');
+  }
   
 }

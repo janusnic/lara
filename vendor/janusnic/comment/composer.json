@@ -1,0 +1,29 @@
+{
+    "name": "janusnic/comment",
+    "description": "Comment package for Laravel",
+    "keywords": ["comment", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "janusnic",
+            "email": "janusnic@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/janusnic/comment/issues"
+    },
+    "require": {
+      
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/models",
+            "src/controllers"
+        ],
+        "psr-0": {
+            "Janusnic\\Comment\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

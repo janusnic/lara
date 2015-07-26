@@ -140,6 +140,7 @@ return [
         Frozennode\Administrator\AdministratorServiceProvider::class,
         Efficiently\AuthorityController\AuthorityControllerServiceProvider::class,
         Tsawler\Laravelfilemanager\LaravelFilemanagerServiceProvider::class,
+        //Janusnic\Comment\CommentServiceProvider::class,
 
         /*
          * Application Service Providers...
