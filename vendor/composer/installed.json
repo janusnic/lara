@@ -3685,5 +3685,219 @@
             }
         ],
         "description": "A file upload/editor intended for use with Laravel 5 and CKEditor"
+    },
+    {
+        "name": "janusnic/latacomm",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/janusnic/laracomm.git",
+            "reference": "5e6fba7914b53837d4c9ea49efbc3697349f7fe5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/janusnic/laracomm/zipball/5e6fba7914b53837d4c9ea49efbc3697349f7fe5",
+            "reference": "5e6fba7914b53837d4c9ea49efbc3697349f7fe5",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.*",
+            "scrutinizer/ocular": "~1.1"
+        },
+        "time": "2015-07-26 13:30:57",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Janusnic\\Laracomm\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Janus Nicon",
+                "email": "janusnic@gmail.com",
+                "homepage": "https://janusnic.github.io",
+                "role": "Developer"
+            }
+        ],
+        "description": "Laravel comments system",
+        "homepage": "https://github.com/janusnic/laracomm.git",
+        "keywords": [
+            "janusnic",
+            "laracomm"
+        ]
+    },
+    {
+        "name": "mews/captcha",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/mewebstudio/captcha.git",
+            "reference": "f6595ac6c23f8686eabd8f1a878cadfbe9188069"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/mewebstudio/captcha/zipball/f6595ac6c23f8686eabd8f1a878cadfbe9188069",
+            "reference": "f6595ac6c23f8686eabd8f1a878cadfbe9188069",
+            "shasum": ""
+        },
+        "require": {
+            "ext-gd": "*",
+            "illuminate/config": "~5.0",
+            "illuminate/filesystem": "~5.0",
+            "illuminate/hashing": "~5.0",
+            "illuminate/support": "~5.0",
+            "intervention/image": "~2.2",
+            "php": ">=5.4"
+        },
+        "require-dev": {
+            "mockery/mockery": "dev-master",
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2015-06-17 06:22:23",
+        "type": "package",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Mews\\Captcha\\": "src/"
+            },
+            "files": [
+                "src/helpers.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Muharrem ERİN",
+                "email": "me@mewebstudio.com",
+                "homepage": "https://github.com/mewebstudio",
+                "role": "Developer"
+            }
+        ],
+        "description": "Laravel 5 Captcha Package",
+        "homepage": "https://github.com/mewebstudio/captcha",
+        "keywords": [
+            "captcha",
+            "laravel5 Captcha",
+            "laravel5 Security"
+        ]
+    },
+    {
+        "name": "greggilbert/recaptcha",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/greggilbert/recaptcha.git",
+            "reference": "3a34211847fb45dd7319ac9dcf8d91384fbc5fc0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/greggilbert/recaptcha/zipball/3a34211847fb45dd7319ac9dcf8d91384fbc5fc0",
+            "reference": "3a34211847fb45dd7319ac9dcf8d91384fbc5fc0",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/support": "~5.1",
+            "php": ">=5.3.0"
+        },
+        "time": "2015-07-01 21:13:58",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.1-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "classmap": [
+                "src/migrations"
+            ],
+            "psr-4": {
+                "Greggilbert\\Recaptcha\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Greg Gilbert",
+                "email": "greg@greg-gilbert.com"
+            }
+        ],
+        "description": "reCAPTCHA Validator for Laravel 5",
+        "homepage": "http://github.com/greggilbert/recaptcha",
+        "keywords": [
+            "captcha",
+            "laravel",
+            "laravel5",
+            "recaptcha"
+        ]
+    },
+    {
+        "name": "anhskohbo/no-captcha",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/anhskohbo/no-captcha.git",
+            "reference": "ae2c86af4ae956d5d68c0e56697cd447d5789b3f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/anhskohbo/no-captcha/zipball/ae2c86af4ae956d5d68c0e56697cd447d5789b3f",
+            "reference": "ae2c86af4ae956d5d68c0e56697cd447d5789b3f",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/support": "5.0.*|5.1.*",
+            "php": ">=5.4.0"
+        },
+        "time": "2015-06-10 05:09:18",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Anhskohbo\\NoCaptcha\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "anhskohbo",
+                "email": "anhskohbo@gmail.com"
+            }
+        ],
+        "description": "No CAPTCHA reCAPTCHA For Laravel.",
+        "keywords": [
+            "captcha",
+            "laravel",
+            "laravel4",
+            "laravel5",
+            "no-captcha",
+            "recaptcha"
+        ]
     }
 ]

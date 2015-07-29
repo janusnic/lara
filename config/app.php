@@ -141,6 +141,9 @@ return [
         Efficiently\AuthorityController\AuthorityControllerServiceProvider::class,
         Tsawler\Laravelfilemanager\LaravelFilemanagerServiceProvider::class,
         //Janusnic\Comment\CommentServiceProvider::class,
+        Mews\Captcha\CaptchaServiceProvider::class,
+        Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
+        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -200,6 +203,8 @@ return [
         'Html'      => Illuminate\Html\HtmlFacade::class,
         'Params'    => Efficiently\AuthorityController\Facades\Params::class,
         'Authority' => Efficiently\AuthorityController\Facades\Authority::class,
+        'Captcha' => Mews\Captcha\Facades\Captcha::class,
+        'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
 
     ],
 

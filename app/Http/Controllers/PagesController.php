@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ContactFormRequest;
 
 class PagesController extends Controller
 {
@@ -32,9 +33,10 @@ class PagesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param  Request  $request
      * @return Response
      */
-    public function store()
+    public function store(Request $request)
     {
         //
     }
@@ -64,10 +66,11 @@ class PagesController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -82,4 +85,29 @@ class PagesController extends Controller
     {
         //
     }
+
+    public function contact()
+    {
+        
+        return view('pages.contact');
+    }
+
+    public function constore(ContactFormRequest $request)
+    {
+       
+    
+       /* \Mail::send('emails.contact',
+        array(
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'user_message' => $request->get('message')
+        ), function($message)
+        {
+        $message->from('wj@wjgilmore.com');
+        $message->to('wj@wjgilmore.com', 'Admin')->subject('TODOParrot Feedback');
+        });*/
+        return \Redirect::route('contact')
+      ->with('message', 'Thanks for contacting us!');
+    }
+
 }

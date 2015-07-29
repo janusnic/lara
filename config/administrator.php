@@ -56,6 +56,7 @@ return array(
 										'permissions',
 										'users',
 										),
+					'pages',
 					'posts',
 					'categories',
 					'comments',

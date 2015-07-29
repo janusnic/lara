@@ -13,7 +13,11 @@
         "efficiently/authority-controller": "dev-master",
         "tsawler/laravel-filemanager": "dev-master",
         
-        "suin/php-rss-writer": "dev-master"
+        "suin/php-rss-writer": "dev-master",
+        "janusnic/latacomm": "^1.0@dev",
+        "mews/captcha": "dev-master",
+        "greggilbert/recaptcha": "^2.1@dev",
+        "anhskohbo/no-captcha": "dev-master"
 
     },
     "require-dev": {
