@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Auth;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -24,7 +25,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    //protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'username', 'avatar','provider_id', 'provider'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -86,5 +88,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             return true;
         }
         return false;
+    }
+
+    public function social()
+    {
+        return $this->hasMany('App\Social');
     }
 }

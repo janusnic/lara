@@ -35,4 +35,15 @@ return [
         'secret' => '',
     ],
 
+    'twitter' => [
+        'client_id' => env('TWITTER_CLIENT_ID'),
+        'client_secret' => env('TWITTER_CLIENT_SECRET'),
+        'redirect' => 'http://127.0.0.1:8000/',
+     ],
+     'github' => [
+        'client_id' => 'eb62e4f33bb77a70e6e3',
+        'client_secret' => '23cd1b6d053452ad0818cbcbd69f6a005a5ce929',
+        'redirect' => 'http://127.0.0.1:8000',
+    ],
+
 ];

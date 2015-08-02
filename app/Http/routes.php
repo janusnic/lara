@@ -45,6 +45,14 @@ Route::get('/', function () {
 
 Route::resource('users', 'UsersController');
 
+Route::get('github', 'AccountController@github_redirect');
+Route::get('account/github', 'AccountController@github');
+
+$s = 'social.';
+Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\AuthController@getSocialRedirect']);
+Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\AuthController@getSocialHandle']);
+
+
 Route::get('contact', 
   ['as' => 'contact', 'uses' => 'PagesController@contact']);
 Route::post('contact', 

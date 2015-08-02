@@ -17,7 +17,9 @@
         "janusnic/latacomm": "^1.0@dev",
         "mews/captcha": "dev-master",
         "greggilbert/recaptcha": "^2.1@dev",
-        "anhskohbo/no-captcha": "dev-master"
+        "anhskohbo/no-captcha": "dev-master",
+        "lucadegasperi/oauth2-server-laravel": "5.0.*@dev",
+        "laravel/socialite": "^3.0@dev"
 
     },
     "require-dev": {

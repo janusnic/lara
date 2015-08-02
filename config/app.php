@@ -144,6 +144,9 @@ return [
         Mews\Captcha\CaptchaServiceProvider::class,
         Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+        LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
+        LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -151,6 +154,8 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        //App\Social\AuthenticatorServiceProvider::class,
+        
 
     ],
 
@@ -203,8 +208,11 @@ return [
         'Html'      => Illuminate\Html\HtmlFacade::class,
         'Params'    => Efficiently\AuthorityController\Facades\Params::class,
         'Authority' => Efficiently\AuthorityController\Facades\Authority::class,
-        'Captcha' => Mews\Captcha\Facades\Captcha::class,
+        'Captcha'   => Mews\Captcha\Facades\Captcha::class,
         'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
+        'Socialize' => Laravel\Socialite\Facades\Socialite::class,
+        'Authorizer' => LucaDegasperi\OAuth2Server\Facades\Authorizer::class,
+        //'Sauth' => App\Social\AuthenticatorServiceProvider::class,
 
     ],
 
