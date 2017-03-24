@@ -11,11 +11,12 @@
 
 namespace Symfony\Component\HttpKernel\Tests\HttpCache;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\HttpCache\Esi;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EsiTest extends \PHPUnit_Framework_TestCase
+class EsiTest extends TestCase
 {
     public function testHasSurrogateEsiCapability()
     {
@@ -39,10 +40,10 @@ class EsiTest extends \PHPUnit_Framework_TestCase
 
         $request = Request::create('/');
         $esi->addSurrogateCapability($request);
-        $this->assertEquals('symfony2="ESI/1.0"', $request->headers->get('Surrogate-Capability'));
+        $this->assertEquals('symfony="ESI/1.0"', $request->headers->get('Surrogate-Capability'));
 
         $esi->addSurrogateCapability($request);
-        $this->assertEquals('symfony2="ESI/1.0", symfony2="ESI/1.0"', $request->headers->get('Surrogate-Capability'));
+        $this->assertEquals('symfony="ESI/1.0", symfony="ESI/1.0"', $request->headers->get('Surrogate-Capability'));
     }
 
     public function testAddSurrogateControl()
@@ -90,6 +91,28 @@ class EsiTest extends \PHPUnit_Framework_TestCase
         $esi->process($request, $response);
 
         $this->assertFalse($response->headers->has('x-body-eval'));
+    }
+
+    public function testMultilineEsiRemoveTagsAreRemoved()
+    {
+        $esi = new Esi();
+
+        $request = Request::create('/');
+        $response = new Response('<esi:remove> <a href="http://www.example.com">www.example.com</a> </esi:remove> Keep this'."<esi:remove>\n <a>www.example.com</a> </esi:remove> And this");
+        $esi->process($request, $response);
+
+        $this->assertEquals(' Keep this And this', $response->getContent());
+    }
+
+    public function testCommentTagsAreRemoved()
+    {
+        $esi = new Esi();
+
+        $request = Request::create('/');
+        $response = new Response('<esi:comment text="some comment &gt;" /> Keep this');
+        $esi->process($request, $response);
+
+        $this->assertEquals(' Keep this', $response->getContent());
     }
 
     public function testProcess()
@@ -203,7 +226,7 @@ class EsiTest extends \PHPUnit_Framework_TestCase
 
     protected function getCache($request, $response)
     {
-        $cache = $this->getMock('Symfony\Component\HttpKernel\HttpCache\HttpCache', array('getRequest', 'handle'), array(), '', false);
+        $cache = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpCache\HttpCache')->setMethods(array('getRequest', 'handle'))->disableOriginalConstructor()->getMock();
         $cache->expects($this->any())
               ->method('getRequest')
               ->will($this->returnValue($request))

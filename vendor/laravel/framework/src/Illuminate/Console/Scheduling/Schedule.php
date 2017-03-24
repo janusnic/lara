@@ -2,10 +2,20 @@
 
 namespace Illuminate\Console\Scheduling;
 
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Console\Application;
+use Illuminate\Container\Container;
+use Symfony\Component\Process\ProcessUtils;
+use Illuminate\Contracts\Cache\Repository as Cache;
 
 class Schedule
 {
+    /**
+     * The cache store implementation.
+     *
+     * @var \Illuminate\Contracts\Cache\Repository
+     */
+    protected $cache;
+
     /**
      * All of the events on the schedule.
      *
@@ -14,15 +24,26 @@ class Schedule
     protected $events = [];
 
     /**
+     * Create a new event instance.
+     *
+     * @param  \Illuminate\Contracts\Cache\Repository  $cache
+     * @return void
+     */
+    public function __construct(Cache $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
      * Add a new callback event to the schedule.
      *
-     * @param  string  $callback
+     * @param  string|callable  $callback
      * @param  array   $parameters
      * @return \Illuminate\Console\Scheduling\Event
      */
     public function call($callback, array $parameters = [])
     {
-        $this->events[] = $event = new CallbackEvent($callback, $parameters);
+        $this->events[] = $event = new CallbackEvent($this->cache, $callback, $parameters);
 
         return $event;
     }
@@ -36,13 +57,26 @@ class Schedule
      */
     public function command($command, array $parameters = [])
     {
-        if (defined('ARTISAN_BINARY')) {
-            $artisan = ARTISAN_BINARY;
-        } else {
-            $artisan = 'artisan';
+        if (class_exists($command)) {
+            $command = Container::getInstance()->make($command)->getName();
         }
 
-        return $this->exec(PHP_BINARY.' "'.$artisan.'" '.$command, $parameters);
+        return $this->exec(
+            Application::formatCommandString($command), $parameters
+        );
+    }
+
+    /**
+     * Add a new job callback event to the schedule.
+     *
+     * @param  object|string  $job
+     * @return \Illuminate\Console\Scheduling\Event
+     */
+    public function job($job)
+    {
+        return $this->call(function () use ($job) {
+            dispatch(is_string($job) ? resolve($job) : $job);
+        })->name(is_string($job) ? $job : get_class($job));
     }
 
     /**
@@ -58,7 +92,7 @@ class Schedule
             $command .= ' '.$this->compileParameters($parameters);
         }
 
-        $this->events[] = $event = new Event($command);
+        $this->events[] = $event = new Event($this->cache, $command);
 
         return $event;
     }
@@ -72,8 +106,27 @@ class Schedule
     protected function compileParameters(array $parameters)
     {
         return collect($parameters)->map(function ($value, $key) {
-            return is_numeric($key) ? $value : $key.'="'.addslashes($value).'"';
+            if (is_array($value)) {
+                $value = collect($value)->map(function ($value) {
+                    return ProcessUtils::escapeArgument($value);
+                })->implode(' ');
+            } elseif (! is_numeric($value) && ! preg_match('/^(-.$|--.*)/i', $value)) {
+                $value = ProcessUtils::escapeArgument($value);
+            }
+
+            return is_numeric($key) ? $value : "{$key}={$value}";
         })->implode(' ');
+    }
+
+    /**
+     * Get all of the events on the schedule that are due.
+     *
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @return array
+     */
+    public function dueEvents($app)
+    {
+        return collect($this->events)->filter->isDue($app);
     }
 
     /**
@@ -84,18 +137,5 @@ class Schedule
     public function events()
     {
         return $this->events;
-    }
-
-    /**
-     * Get all of the events on the schedule that are due.
-     *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
-     * @return array
-     */
-    public function dueEvents(Application $app)
-    {
-        return array_filter($this->events, function ($event) use ($app) {
-            return $event->isDue($app);
-        });
     }
 }

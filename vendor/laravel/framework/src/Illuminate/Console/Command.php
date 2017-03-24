@@ -10,8 +10,8 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
-use Illuminate\Contracts\Foundation\Application as LaravelApplication;
 
 class Command extends SymfonyCommand
 {
@@ -58,6 +58,33 @@ class Command extends SymfonyCommand
     protected $description;
 
     /**
+     * Indicates whether the command should be shown in the Artisan command list.
+     *
+     * @var bool
+     */
+    protected $hidden = false;
+
+    /**
+     * The default verbosity of output commands.
+     *
+     * @var int
+     */
+    protected $verbosity = OutputInterface::VERBOSITY_NORMAL;
+
+    /**
+     * The mapping between human readable verbosity levels and Symfony's OutputInterface.
+     *
+     * @var array
+     */
+    protected $verbosityMap = [
+        'v' => OutputInterface::VERBOSITY_VERBOSE,
+        'vv' => OutputInterface::VERBOSITY_VERY_VERBOSE,
+        'vvv' => OutputInterface::VERBOSITY_DEBUG,
+        'quiet' => OutputInterface::VERBOSITY_QUIET,
+        'normal' => OutputInterface::VERBOSITY_NORMAL,
+    ];
+
+    /**
      * Create a new console command instance.
      *
      * @return void
@@ -73,9 +100,14 @@ class Command extends SymfonyCommand
             parent::__construct($this->name);
         }
 
+        // Once we have constructed the command, we'll set the description and other
+        // related properties of the command. If a signature wasn't used to build
+        // the command we'll set the arguments and the options on this command.
         $this->setDescription($this->description);
 
-        if (!isset($this->signature)) {
+        $this->setHidden($this->hidden);
+
+        if (! isset($this->signature)) {
             $this->specifyParameters();
         }
     }
@@ -89,8 +121,11 @@ class Command extends SymfonyCommand
     {
         list($name, $arguments, $options) = Parser::parse($this->signature);
 
-        parent::__construct($name);
+        parent::__construct($this->name = $name);
 
+        // After parsing the signature we will spin through the arguments and options
+        // and set them on this command. These will already be changed into proper
+        // instances of these "InputArgument" and "InputOption" Symfony classes.
         foreach ($arguments as $argument) {
             $this->getDefinition()->addArgument($argument);
         }
@@ -128,11 +163,9 @@ class Command extends SymfonyCommand
      */
     public function run(InputInterface $input, OutputInterface $output)
     {
-        $this->input = $input;
-
-        $this->output = new OutputStyle($input, $output);
-
-        return parent::run($input, $output);
+        return parent::run(
+            $this->input = $input, $this->output = new OutputStyle($input, $output)
+        );
     }
 
     /**
@@ -158,11 +191,11 @@ class Command extends SymfonyCommand
      */
     public function call($command, array $arguments = [])
     {
-        $instance = $this->getApplication()->find($command);
-
         $arguments['command'] = $command;
 
-        return $instance->run(new ArrayInput($arguments), $this->output);
+        return $this->getApplication()->find($command)->run(
+            new ArrayInput($arguments), $this->output
+        );
     }
 
     /**
@@ -174,11 +207,22 @@ class Command extends SymfonyCommand
      */
     public function callSilent($command, array $arguments = [])
     {
-        $instance = $this->getApplication()->find($command);
-
         $arguments['command'] = $command;
 
-        return $instance->run(new ArrayInput($arguments), new NullOutput);
+        return $this->getApplication()->find($command)->run(
+            new ArrayInput($arguments), new NullOutput
+        );
+    }
+
+    /**
+     * Determine if the given argument is present.
+     *
+     * @param  string|int  $name
+     * @return bool
+     */
+    public function hasArgument($name)
+    {
+        return $this->input->hasArgument($name);
     }
 
     /**
@@ -197,6 +241,27 @@ class Command extends SymfonyCommand
     }
 
     /**
+     * Get all of the arguments passed to the command.
+     *
+     * @return array
+     */
+    public function arguments()
+    {
+        return $this->argument();
+    }
+
+    /**
+     * Determine if the given option is present.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function hasOption($name)
+    {
+        return $this->input->hasOption($name);
+    }
+
+    /**
      * Get the value of a command option.
      *
      * @param  string  $key
@@ -209,6 +274,16 @@ class Command extends SymfonyCommand
         }
 
         return $this->input->getOption($key);
+    }
+
+    /**
+     * Get all of the options passed to the command.
+     *
+     * @return array
+     */
+    public function options()
+    {
+        return $this->option();
     }
 
     /**
@@ -289,7 +364,7 @@ class Command extends SymfonyCommand
      * @param  string  $default
      * @param  mixed   $attempts
      * @param  bool    $multiple
-     * @return bool
+     * @return string
      */
     public function choice($question, array $choices, $default = null, $attempts = null, $multiple = null)
     {
@@ -304,7 +379,7 @@ class Command extends SymfonyCommand
      * Format input to textual table.
      *
      * @param  array   $headers
-     * @param  array|\Illuminate\Contracts\Support\Arrayable  $rows
+     * @param  \Illuminate\Contracts\Support\Arrayable|array  $rows
      * @param  string  $style
      * @return void
      */
@@ -323,55 +398,124 @@ class Command extends SymfonyCommand
      * Write a string as information output.
      *
      * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
-    public function info($string)
+    public function info($string, $verbosity = null)
     {
-        $this->output->writeln("<info>$string</info>");
+        $this->line($string, 'info', $verbosity);
     }
 
     /**
      * Write a string as standard output.
      *
      * @param  string  $string
+     * @param  string  $style
+     * @param  null|int|string  $verbosity
      * @return void
      */
-    public function line($string)
+    public function line($string, $style = null, $verbosity = null)
     {
-        $this->output->writeln($string);
+        $styled = $style ? "<$style>$string</$style>" : $string;
+
+        $this->output->writeln($styled, $this->parseVerbosity($verbosity));
     }
 
     /**
      * Write a string as comment output.
      *
      * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
-    public function comment($string)
+    public function comment($string, $verbosity = null)
     {
-        $this->output->writeln("<comment>$string</comment>");
+        $this->line($string, 'comment', $verbosity);
     }
 
     /**
      * Write a string as question output.
      *
      * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
-    public function question($string)
+    public function question($string, $verbosity = null)
     {
-        $this->output->writeln("<question>$string</question>");
+        $this->line($string, 'question', $verbosity);
     }
 
     /**
      * Write a string as error output.
      *
      * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
-    public function error($string)
+    public function error($string, $verbosity = null)
     {
-        $this->output->writeln("<error>$string</error>");
+        $this->line($string, 'error', $verbosity);
+    }
+
+    /**
+     * Write a string as warning output.
+     *
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
+     * @return void
+     */
+    public function warn($string, $verbosity = null)
+    {
+        if (! $this->output->getFormatter()->hasStyle('warning')) {
+            $style = new OutputFormatterStyle('yellow');
+
+            $this->output->getFormatter()->setStyle('warning', $style);
+        }
+
+        $this->line($string, 'warning', $verbosity);
+    }
+
+    /**
+     * Write a string in an alert box.
+     *
+     * @param  string  $string
+     * @return void
+     */
+    public function alert($string)
+    {
+        $this->comment(str_repeat('*', strlen($string) + 12));
+        $this->comment('*     '.$string.'     *');
+        $this->comment(str_repeat('*', strlen($string) + 12));
+
+        $this->output->writeln('');
+    }
+
+    /**
+     * Set the verbosity level.
+     *
+     * @param  string|int  $level
+     * @return void
+     */
+    protected function setVerbosity($level)
+    {
+        $this->verbosity = $this->parseVerbosity($level);
+    }
+
+    /**
+     * Get the verbosity level in terms of Symfony's OutputInterface level.
+     *
+     * @param  string|int  $level
+     * @return int
+     */
+    protected function parseVerbosity($level = null)
+    {
+        if (isset($this->verbosityMap[$level])) {
+            $level = $this->verbosityMap[$level];
+        } elseif (! is_int($level)) {
+            $level = $this->verbosity;
+        }
+
+        return $level;
     }
 
     /**
@@ -417,10 +561,10 @@ class Command extends SymfonyCommand
     /**
      * Set the Laravel application instance.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $laravel
+     * @param  \Illuminate\Contracts\Container\Container  $laravel
      * @return void
      */
-    public function setLaravel(LaravelApplication $laravel)
+    public function setLaravel($laravel)
     {
         $this->laravel = $laravel;
     }

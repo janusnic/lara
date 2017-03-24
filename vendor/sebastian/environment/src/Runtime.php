@@ -21,16 +21,14 @@ class Runtime
     private static $binary;
 
     /**
-     * Returns true when the runtime used is HHVM or
-     * the runtime used is PHP + Xdebug.
+     * Returns true when Xdebug is supported or
+     * the runtime used is PHPDBG (PHP >= 7.0).
      *
      * @return bool
      */
     public function canCollectCodeCoverage()
     {
-        return $this->isHHVM() ||
-               $this->hasXdebug() ||
-               ($this->isPHPDBG() && function_exists('phpdbg_start_oplog'));
+        return $this->hasXdebug() || $this->hasPHPDBGCodeCoverage();
     }
 
     /**
@@ -52,7 +50,9 @@ class Runtime
 
         // PHP >= 5.4.0
         if (self::$binary === null && defined('PHP_BINARY')) {
-            self::$binary = escapeshellarg(PHP_BINARY);
+            if (PHP_BINARY !== '') {
+                self::$binary = escapeshellarg(PHP_BINARY);
+            }
         }
 
         // PHP < 5.4.0
@@ -74,11 +74,11 @@ class Runtime
         }
 
         if (self::$binary === null) {
-            $possibleBinaryLocations = array(
+            $possibleBinaryLocations = [
                 PHP_BINDIR . '/php',
                 PHP_BINDIR . '/php-cli.exe',
                 PHP_BINDIR . '/php.exe'
-            );
+            ];
 
             foreach ($possibleBinaryLocations as $binary) {
                 if (is_readable($binary)) {
@@ -125,7 +125,7 @@ class Runtime
         if ($this->isHHVM()) {
             return 'http://hhvm.com/';
         } else {
-            return 'http://php.net/';
+            return 'https://secure.php.net/';
         }
     }
 
@@ -148,7 +148,7 @@ class Runtime
      */
     public function hasXdebug()
     {
-        return $this->isPHP() && extension_loaded('xdebug');
+        return ($this->isPHP() || $this->isHHVM()) && extension_loaded('xdebug');
     }
 
     /**
@@ -162,7 +162,7 @@ class Runtime
     }
 
     /**
-     * Returns true when the runtime used is PHP.
+     * Returns true when the runtime used is PHP without the PHPDBG SAPI.
      *
      * @return bool
      */
@@ -172,12 +172,23 @@ class Runtime
     }
 
     /**
-     * Returns true when the runtime used is PHP.
+     * Returns true when the runtime used is PHP with the PHPDBG SAPI.
      *
      * @return bool
      */
     public function isPHPDBG()
     {
-        return !$this->isHHVM() && PHP_SAPI === 'phpdbg';
+        return PHP_SAPI === 'phpdbg' && !$this->isHHVM();
+    }
+
+    /**
+     * Returns true when the runtime used is PHP with the PHPDBG SAPI
+     * and the phpdbg_*_oplog() functions are available (PHP >= 7.0).
+     *
+     * @return bool
+     */
+    public function hasPHPDBGCodeCoverage()
+    {
+        return $this->isPHPDBG() && function_exists('phpdbg_start_oplog');
     }
 }

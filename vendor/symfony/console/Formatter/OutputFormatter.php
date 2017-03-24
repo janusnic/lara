@@ -11,12 +11,12 @@
 
 namespace Symfony\Component\Console\Formatter;
 
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+
 /**
  * Formatter class for console output.
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @api
  */
 class OutputFormatter implements OutputFormatterInterface
 {
@@ -33,7 +33,29 @@ class OutputFormatter implements OutputFormatterInterface
      */
     public static function escape($text)
     {
-        return preg_replace('/([^\\\\]?)</', '$1\\<', $text);
+        $text = preg_replace('/([^\\\\]?)</', '$1\\<', $text);
+
+        return self::escapeTrailingBackslash($text);
+    }
+
+    /**
+     * Escapes trailing "\" in given text.
+     *
+     * @param string $text Text to escape
+     *
+     * @return string Escaped text
+     *
+     * @internal
+     */
+    public static function escapeTrailingBackslash($text)
+    {
+        if ('\\' === substr($text, -1)) {
+            $len = strlen($text);
+            $text = rtrim($text, '\\');
+            $text .= str_repeat('<<', $len - strlen($text));
+        }
+
+        return $text;
     }
 
     /**
@@ -41,8 +63,6 @@ class OutputFormatter implements OutputFormatterInterface
      *
      * @param bool                            $decorated Whether this formatter should actually decorate strings
      * @param OutputFormatterStyleInterface[] $styles    Array of "name => FormatterStyle" instances
-     *
-     * @api
      */
     public function __construct($decorated = false, array $styles = array())
     {
@@ -64,8 +84,6 @@ class OutputFormatter implements OutputFormatterInterface
      * Sets the decorated flag.
      *
      * @param bool $decorated Whether to decorate the messages or not
-     *
-     * @api
      */
     public function setDecorated($decorated)
     {
@@ -76,8 +94,6 @@ class OutputFormatter implements OutputFormatterInterface
      * Gets the decorated flag.
      *
      * @return bool true if the output will decorate messages, false otherwise
-     *
-     * @api
      */
     public function isDecorated()
     {
@@ -89,8 +105,6 @@ class OutputFormatter implements OutputFormatterInterface
      *
      * @param string                        $name  The style name
      * @param OutputFormatterStyleInterface $style The style instance
-     *
-     * @api
      */
     public function setStyle($name, OutputFormatterStyleInterface $style)
     {
@@ -103,8 +117,6 @@ class OutputFormatter implements OutputFormatterInterface
      * @param string $name
      *
      * @return bool
-     *
-     * @api
      */
     public function hasStyle($name)
     {
@@ -118,14 +130,12 @@ class OutputFormatter implements OutputFormatterInterface
      *
      * @return OutputFormatterStyleInterface
      *
-     * @throws \InvalidArgumentException When style isn't defined
-     *
-     * @api
+     * @throws InvalidArgumentException When style isn't defined
      */
     public function getStyle($name)
     {
         if (!$this->hasStyle($name)) {
-            throw new \InvalidArgumentException(sprintf('Undefined style: %s', $name));
+            throw new InvalidArgumentException(sprintf('Undefined style: %s', $name));
         }
 
         return $this->styles[strtolower($name)];
@@ -137,15 +147,13 @@ class OutputFormatter implements OutputFormatterInterface
      * @param string $message The message to style
      *
      * @return string The styled message
-     *
-     * @api
      */
     public function format($message)
     {
         $message = (string) $message;
         $offset = 0;
         $output = '';
-        $tagRegex = '[a-z][a-z0-9_=;-]*';
+        $tagRegex = '[a-z][a-z0-9,_=;-]*+';
         preg_match_all("#<(($tagRegex) | /($tagRegex)?)>#ix", $message, $matches, PREG_OFFSET_CAPTURE);
         foreach ($matches[0] as $i => $match) {
             $pos = $match[1];
@@ -180,6 +188,10 @@ class OutputFormatter implements OutputFormatterInterface
 
         $output .= $this->applyCurrentStyle(substr($message, $offset));
 
+        if (false !== strpos($output, '<<')) {
+            return strtr($output, array('\\<' => '<', '<<' => '\\'));
+        }
+
         return str_replace('\\<', '<', $output);
     }
 
@@ -196,7 +208,7 @@ class OutputFormatter implements OutputFormatterInterface
      *
      * @param string $string
      *
-     * @return OutputFormatterStyle|bool false if string is not format string
+     * @return OutputFormatterStyle|false false if string is not format string
      */
     private function createStyleFromString($string)
     {
@@ -204,7 +216,7 @@ class OutputFormatter implements OutputFormatterInterface
             return $this->styles[$string];
         }
 
-        if (!preg_match_all('/([^=]+)=([^;]+)(;|$)/', strtolower($string), $matches, PREG_SET_ORDER)) {
+        if (!preg_match_all('/([^=]+)=([^;]+)(;|$)/', $string, $matches, PREG_SET_ORDER)) {
             return false;
         }
 
@@ -216,12 +228,20 @@ class OutputFormatter implements OutputFormatterInterface
                 $style->setForeground($match[1]);
             } elseif ('bg' == $match[0]) {
                 $style->setBackground($match[1]);
-            } else {
-                try {
-                    $style->setOption($match[1]);
-                } catch (\InvalidArgumentException $e) {
-                    return false;
+            } elseif ('options' === $match[0]) {
+                preg_match_all('([^,;]+)', $match[1], $options);
+                $options = array_shift($options);
+                foreach ($options as $option) {
+                    try {
+                        $style->setOption($option);
+                    } catch (\InvalidArgumentException $e) {
+                        @trigger_error(sprintf('Unknown style options are deprecated since version 3.2 and will be removed in 4.0. Exception "%s".', $e->getMessage()), E_USER_DEPRECATED);
+
+                        return false;
+                    }
                 }
+            } else {
+                return false;
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace Illuminate\Cookie;
 
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Cookie;
 use Illuminate\Contracts\Cookie\QueueingFactory as JarContract;
@@ -20,7 +21,14 @@ class CookieJar implements JarContract
      *
      * @var string
      */
-    protected $domain = null;
+    protected $domain;
+
+    /**
+     * The default secure setting (defaults to false).
+     *
+     * @var bool
+     */
+    protected $secure = false;
 
     /**
      * All of the cookies queued for sending.
@@ -43,9 +51,9 @@ class CookieJar implements JarContract
      */
     public function make($name, $value, $minutes = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
     {
-        list($path, $domain) = $this->getPathAndDomain($path, $domain);
+        list($path, $domain, $secure) = $this->getPathAndDomain($path, $domain, $secure);
 
-        $time = ($minutes == 0) ? 0 : time() + ($minutes * 60);
+        $time = ($minutes == 0) ? 0 : Carbon::now()->getTimestamp() + ($minutes * 60);
 
         return new Cookie($name, $value, $time, $path, $domain, $secure, $httpOnly);
     }
@@ -87,7 +95,7 @@ class CookieJar implements JarContract
      */
     public function hasQueued($key)
     {
-        return !is_null($this->queued($key));
+        return ! is_null($this->queued($key));
     }
 
     /**
@@ -105,15 +113,15 @@ class CookieJar implements JarContract
     /**
      * Queue a cookie to send with the next response.
      *
-     * @param  mixed
+     * @param  array  $parameters
      * @return void
      */
-    public function queue()
+    public function queue(...$parameters)
     {
-        if (head(func_get_args()) instanceof Cookie) {
-            $cookie = head(func_get_args());
+        if (head($parameters) instanceof Cookie) {
+            $cookie = head($parameters);
         } else {
-            $cookie = call_user_func_array([$this, 'make'], func_get_args());
+            $cookie = call_user_func_array([$this, 'make'], $parameters);
         }
 
         $this->queued[$cookie->getName()] = $cookie;
@@ -123,6 +131,7 @@ class CookieJar implements JarContract
      * Remove a cookie from the queue.
      *
      * @param  string  $name
+     * @return void
      */
     public function unqueue($name)
     {
@@ -134,11 +143,12 @@ class CookieJar implements JarContract
      *
      * @param  string  $path
      * @param  string  $domain
+     * @param  bool    $secure
      * @return array
      */
-    protected function getPathAndDomain($path, $domain)
+    protected function getPathAndDomain($path, $domain, $secure = false)
     {
-        return [$path ?: $this->path, $domain ?: $this->domain];
+        return [$path ?: $this->path, $domain ?: $this->domain, $secure ?: $this->secure];
     }
 
     /**
@@ -146,11 +156,12 @@ class CookieJar implements JarContract
      *
      * @param  string  $path
      * @param  string  $domain
+     * @param  bool    $secure
      * @return $this
      */
-    public function setDefaultPathAndDomain($path, $domain)
+    public function setDefaultPathAndDomain($path, $domain, $secure = false)
     {
-        list($this->path, $this->domain) = [$path, $domain];
+        list($this->path, $this->domain, $this->secure) = [$path, $domain, $secure];
 
         return $this;
     }

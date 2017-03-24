@@ -3,25 +3,12 @@
 namespace Illuminate\Routing;
 
 use ReflectionMethod;
+use ReflectionParameter;
 use Illuminate\Support\Arr;
 use ReflectionFunctionAbstract;
 
 trait RouteDependencyResolverTrait
 {
-    /**
-     * Call a class method with the resolved dependencies.
-     *
-     * @param  object  $instance
-     * @param  string  $method
-     * @return mixed
-     */
-    protected function callWithDependencies($instance, $method)
-    {
-        return call_user_func_array(
-            [$instance, $method], $this->resolveClassMethodDependencies([], $instance, $method)
-        );
-    }
-
     /**
      * Resolve the object method's type-hinted dependencies.
      *
@@ -32,7 +19,7 @@ trait RouteDependencyResolverTrait
      */
     protected function resolveClassMethodDependencies(array $parameters, $instance, $method)
     {
-        if (!method_exists($instance, $method)) {
+        if (! method_exists($instance, $method)) {
             return $parameters;
         }
 
@@ -50,20 +37,47 @@ trait RouteDependencyResolverTrait
      */
     public function resolveMethodDependencies(array $parameters, ReflectionFunctionAbstract $reflector)
     {
-        foreach ($reflector->getParameters() as $key => $parameter) {
-            // If the parameter has a type-hinted class, we will check to see if it is already in
-            // the list of parameters. If it is we will just skip it as it is probably a model
-            // binding and we do not want to mess with those; otherwise, we resolve it here.
-            $class = $parameter->getClass();
+        $results = [];
 
-            if ($class && !$this->alreadyInParameters($class->name, $parameters)) {
-                array_splice(
-                    $parameters, $key, 0, [$this->container->make($class->name)]
-                );
+        $instanceCount = 0;
+
+        $values = array_values($parameters);
+
+        foreach ($reflector->getParameters() as $key => $parameter) {
+            $instance = $this->transformDependency(
+                $parameter, $parameters
+            );
+
+            if (! is_null($instance)) {
+                $instanceCount++;
+
+                $results[] = $instance;
+            } else {
+                $results[] = isset($values[$key - $instanceCount])
+                    ? $values[$key - $instanceCount] : $parameter->getDefaultValue();
             }
         }
 
-        return $parameters;
+        return $results;
+    }
+
+    /**
+     * Attempt to transform the given parameter into a class instance.
+     *
+     * @param  \ReflectionParameter  $parameter
+     * @param  array  $parameters
+     * @return mixed
+     */
+    protected function transformDependency(ReflectionParameter $parameter, $parameters)
+    {
+        $class = $parameter->getClass();
+
+        // If the parameter has a type-hinted class, we will check to see if it is already in
+        // the list of parameters. If it is we will just skip it as it is probably a model
+        // binding and we do not want to mess with those; otherwise, we resolve it here.
+        if ($class && ! $this->alreadyInParameters($class->name, $parameters)) {
+            return $this->container->make($class->name);
+        }
     }
 
     /**
@@ -75,7 +89,7 @@ trait RouteDependencyResolverTrait
      */
     protected function alreadyInParameters($class, array $parameters)
     {
-        return !is_null(Arr::first($parameters, function ($key, $value) use ($class) {
+        return ! is_null(Arr::first($parameters, function ($value) use ($class) {
             return $value instanceof $class;
         }));
     }

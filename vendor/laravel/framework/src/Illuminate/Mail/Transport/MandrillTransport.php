@@ -2,13 +2,10 @@
 
 namespace Illuminate\Mail\Transport;
 
-use Swift_Transport;
 use Swift_Mime_Message;
-use Swift_Events_SendEvent;
-use Swift_Events_EventListener;
 use GuzzleHttp\ClientInterface;
 
-class MandrillTransport extends Transport implements Swift_Transport
+class MandrillTransport extends Transport
 {
     /**
      * Guzzle client instance.
@@ -33,32 +30,8 @@ class MandrillTransport extends Transport implements Swift_Transport
      */
     public function __construct(ClientInterface $client, $key)
     {
-        $this->client = $client;
         $this->key = $key;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isStarted()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function start()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function stop()
-    {
-        return true;
+        $this->client = $client;
     }
 
     /**
@@ -68,20 +41,18 @@ class MandrillTransport extends Transport implements Swift_Transport
     {
         $this->beforeSendPerformed($message);
 
-        $data = [
-            'key' => $this->key,
-            'to' => $this->getToAddresses($message),
-            'raw_message' => (string) $message,
-            'async' => false,
-        ];
+        $this->client->post('https://mandrillapp.com/api/1.0/messages/send-raw.json', [
+            'form_params' => [
+                'key' => $this->key,
+                'to' => $this->getTo($message),
+                'raw_message' => $message->toString(),
+                'async' => true,
+            ],
+        ]);
 
-        if (version_compare(ClientInterface::VERSION, '6') === 1) {
-            $options = ['form_params' => $data];
-        } else {
-            $options = ['body' => $data];
-        }
+        $this->sendPerformed($message);
 
-        return $this->client->post('https://mandrillapp.com/api/1.0/messages/send-raw.json', $options);
+        return $this->numberOfRecipients($message);
     }
 
     /**
@@ -92,7 +63,7 @@ class MandrillTransport extends Transport implements Swift_Transport
      * @param  \Swift_Mime_Message $message
      * @return array
      */
-    protected function getToAddresses(Swift_Mime_Message $message)
+    protected function getTo(Swift_Mime_Message $message)
     {
         $to = [];
 
@@ -125,7 +96,7 @@ class MandrillTransport extends Transport implements Swift_Transport
      * Set the API key being used by the transport.
      *
      * @param  string  $key
-     * @return void
+     * @return string
      */
     public function setKey($key)
     {

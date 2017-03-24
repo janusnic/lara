@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Contracts\Cache\Factory as FactoryContract;
+use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 
 class CacheManager implements FactoryContract
 {
@@ -82,6 +83,8 @@ class CacheManager implements FactoryContract
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Cache\Repository
+     *
+     * @throws \InvalidArgumentException
      */
     protected function resolve($name)
     {
@@ -94,7 +97,13 @@ class CacheManager implements FactoryContract
         if (isset($this->customCreators[$config['driver']])) {
             return $this->callCustomCreator($config);
         } else {
-            return $this->{'create'.ucfirst($config['driver']).'Driver'}($config);
+            $driverMethod = 'create'.ucfirst($config['driver']).'Driver';
+
+            if (method_exists($this, $driverMethod)) {
+                return $this->{$driverMethod}($config);
+            } else {
+                throw new InvalidArgumentException("Driver [{$config['driver']}] is not supported.");
+            }
         }
     }
 
@@ -153,7 +162,12 @@ class CacheManager implements FactoryContract
     {
         $prefix = $this->getPrefix($config);
 
-        $memcached = $this->app['memcached.connector']->connect($config['servers']);
+        $memcached = $this->app['memcached.connector']->connect(
+            $config['servers'],
+            array_get($config, 'persistent_id'),
+            array_get($config, 'options', []),
+            array_filter(array_get($config, 'sasl', []))
+        );
 
         return $this->repository(new MemcachedStore($memcached, $prefix));
     }
@@ -169,28 +183,6 @@ class CacheManager implements FactoryContract
     }
 
     /**
-     * Create an instance of the WinCache cache driver.
-     *
-     * @param  array  $config
-     * @return \Illuminate\Cache\WinCacheStore
-     */
-    protected function createWincacheDriver(array $config)
-    {
-        return $this->repository(new WinCacheStore($this->getPrefix($config)));
-    }
-
-    /**
-     * Create an instance of the XCache cache driver.
-     *
-     * @param  array  $config
-     * @return \Illuminate\Cache\WinCacheStore
-     */
-    protected function createXcacheDriver(array $config)
-    {
-        return $this->repository(new XCacheStore($this->getPrefix($config)));
-    }
-
-    /**
      * Create an instance of the Redis cache driver.
      *
      * @param  array  $config
@@ -200,7 +192,7 @@ class CacheManager implements FactoryContract
     {
         $redis = $this->app['redis'];
 
-        $connection = Arr::get($config, 'connection', 'default') ?: 'default';
+        $connection = Arr::get($config, 'connection', 'default');
 
         return $this->repository(new RedisStore($redis, $this->getPrefix($config), $connection));
     }
@@ -232,9 +224,9 @@ class CacheManager implements FactoryContract
     {
         $repository = new Repository($store);
 
-        if ($this->app->bound('Illuminate\Contracts\Events\Dispatcher')) {
+        if ($this->app->bound(DispatcherContract::class)) {
             $repository->setEventDispatcher(
-                $this->app['Illuminate\Contracts\Events\Dispatcher']
+                $this->app[DispatcherContract::class]
             );
         }
 
@@ -293,7 +285,7 @@ class CacheManager implements FactoryContract
      */
     public function extend($driver, Closure $callback)
     {
-        $this->customCreators[$driver] = $callback;
+        $this->customCreators[$driver] = $callback->bindTo($this, $this);
 
         return $this;
     }
@@ -307,6 +299,6 @@ class CacheManager implements FactoryContract
      */
     public function __call($method, $parameters)
     {
-        return call_user_func_array([$this->store(), $method], $parameters);
+        return $this->store()->$method(...$parameters);
     }
 }
