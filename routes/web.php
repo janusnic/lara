@@ -11,29 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/hey', function()
+Route::get('/', function()
 {
-    return 'Hello World';
+    return View::make('pages.home');
 });
 
-Route::get('/hell', function() {
-    return view('greeting');
-});
 
-Route::get('/jan', function() {
-    return view('hello.greeting', ['name' => 'Janus']);
-});
-
-Route::get('/about', 'AboutController@showIndex');
-
-Route::get('foo', ['uses' => 'AboutController@fooIndex', 'as' => 'name']);
-
-Route::get('bar', 'AboutController@barIndex');
-
-Route::get('bax', 'AboutController@baxIndex');
-
-Route::get('baz', 'AboutController@bazIndex');
+Route::get('about', 'AboutController@index');
+Route::get('articles', 'ArticlesController@index');
