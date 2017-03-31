@@ -1,11 +1,11 @@
-<div class="navbar">
-    <div class="navbar-inner">
-        <a id="logo" href="/">Single Malt</a>
-        <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
+<div class="container">
+
+<nav class="navbar navbar-inverse">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="{{ URL::to('blog') }}">Janus Noc</a>
     </div>
-</div>
+    <ul class="nav navbar-nav">
+        <li><a href="{{ URL::to('blog') }}">View All Posts</a></li>
+        <li><a href="{{ URL::to('blog/create') }}">Create a Post</a>
+    </ul>
+</nav>

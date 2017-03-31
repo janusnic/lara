@@ -18,4 +18,5 @@ Route::get('/', function()
 
 
 Route::get('about', 'AboutController@index');
-Route::get('articles', 'ArticlesController@index');
+Route::resource('blog', 'ArticlesController');
+// Route::get('resource', 'ArticlesController@index');
