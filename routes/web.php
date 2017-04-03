@@ -19,4 +19,12 @@ Route::get('/', function()
 
 Route::get('about', 'AboutController@index');
 Route::resource('blog', 'ArticlesController');
-// Route::get('resource', 'ArticlesController@index');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
+
+Route::get('/admin','AdminController@index');
+Route::get('/admin/login',['as' => 'admin.login','uses' => 'Admin\LoginController@showLoginForm']);
+Route::post('/admin/login',['uses' => 'Admin\LoginController@login']);
+Route::post('/admin/logout',['as' => 'admin.logout','uses' => 'Admin\LoginController@logout']);
