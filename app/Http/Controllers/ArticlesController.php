@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use App\Article;
+use App\Tag;
+use App\Category;
 
  class ArticlesController extends Controller
 {
@@ -32,7 +34,10 @@ use App\Article;
     public function create()
     {
         // load the create form (views/articles/create.blade.php)
-        return view('articles.create');
+        // return view('articles.create');
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('articles.create')->withCategories($categories)->withTags($tags);
     }
 
     /**
@@ -40,42 +45,41 @@ use App\Article;
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
-		// validate
-		// read more on validation at http://laravel.com/docs/validation
-		$rules = array(
-			'title'       => 'required',
-			'summary'      => 'required',
-			'content' => 'required'
-		);
-		$validator = Validator::make(Input::all(), $rules);
 
-		// process
-		if ($validator->fails()) {
-			return Redirect::to('blog/create')
-				->withErrors($validator)
-				->withInput();
-		} else {
-			// store
-			$post = new Article;
-			$post->title       = Input::get('title');
-            $post->slug = str_slug($post->title);
-			$post->summary      = Input::get('summary');
-			$post->content = Input::get('content');
+    public function store(Request $request)
+    {
+        // validate the data
+        $this->validate($request, array(
+                'title'         => 'required|max:255',
+                'category_id'   => 'required|integer',
+                'summary'      => 'required',
+                'content' => 'required'
+            ));
 
-            $post->seen =  Input::get('seen');
-            $post->active = Input::get('active');
-            $post->seo_title = Input::get('seo_title');
-            $post->seo_key = Input::get('seo_key');
-            $post->seo_desc = Input::get('seo_desc');
-			$post->save();
+        // store in the database
+        $post = new Article;
 
-			// redirect
-			Session::flash('message', 'Successfully created post!');
-			return Redirect::to('blog');
-		}
-	}
+        $post->title = $request->title;
+        $post->slug = str_slug($post->title);
+        $post->category_id = $request->category_id;
+        $post->summary = $request->summary;
+        $post->content = $request->content;
+
+        $post->seen =  $request->seen;
+        $post->active = $request->active;
+        $post->seo_title = $request->seo_title;
+        $post->seo_key = $request->seo_key;
+        $post->seo_desc = $request->seo_desc;
+
+        $post->save();
+
+        $post->tags()->sync($request->tags, false);
+
+        Session::flash('success', 'The blog post was successfully save!');
+
+        return redirect()->route('blog.show', $post->id);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -85,11 +89,21 @@ use App\Article;
      */
     public function edit($id)
     {
-
+        // find the post in the database and save as a var
         $post = Article::find($id);
-        // show the edit form and pass the article
-        return view('articles.edit')
-                    ->with('post', $post);
+        $categories = Category::all();
+        $cats = array();
+        foreach ($categories as $category) {
+            $cats[$category->id] = $category->name;
+        }
+
+        $tags = Tag::all();
+        $tags2 = array();
+        foreach ($tags as $tag) {
+            $tags2[$tag->id] = $tag->name;
+        }
+        // return the view and pass in the var we previously created
+        return view('articles.edit')->withPost($post)->withCategories($cats)->withTags($tags2);
     }
 
     /**
@@ -98,41 +112,57 @@ use App\Article;
      * @param  int  $id
      * @return Response
      */
-    public function update($id)
+
+    public function update(Request $request, $id)
     {
-        // validate
-        // read more on validation at http://laravel.com/docs/validation
-        $rules = array(
-            'title'       => 'required',
-            'summary'      => 'required',
-            'content' => 'required'
-        );
+        // Validate the data
+        $post = Article::find($id);
 
-        $validator = Validator::make(Input::all(), $rules);
-        // process
-        if ($validator->fails()) {
-            return Redirect::to('blog/create')
-                ->withErrors($validator)
-                ->withInput();
+        if ($request->input('slug') == $post->slug) {
+            $this->validate($request, array(
+                'title'         => 'required|max:255',
+                'category_id'   => 'required|integer',
+                'summary'      => 'required',
+                'content' => 'required'
+            ));
         } else {
-            // store
-            $post = Article::find($id);;
-            $post->title       = Input::get('title');
-            $post->slug = str_slug($post->title);
-            $post->summary      = Input::get('summary');
-            $post->content = Input::get('content');
-
-            $post->seen =  Input::get('seen');
-            $post->active = Input::get('active');
-            $post->seo_title = Input::get('seo_title');
-            $post->seo_key = Input::get('seo_key');
-            $post->seo_desc = Input::get('seo_desc');
-            $post->save();
-
-            // redirect
-            Session::flash('message', 'Successfully updated post!');
-            return Redirect::to('blog');
+        $this->validate($request, array(
+                'title' => 'required|max:255',
+                'slug'  => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
+                'category_id' => 'required|integer',
+                'summary'      => 'required',
+                'content' => 'required'
+            ));
         }
+
+        $post = Article::find($id);;
+        $post->title = $request->input('title');
+
+        $post->slug = str_slug($post->title);
+        $post->category_id = $request->input('category_id');
+        $post->summary = $request->input('summary');
+        $post->content = $request->input('content');
+
+        $post->seen =  $request->input('seen');
+        $post->active =  $request->input('active');
+
+        $post->seo_title = $request->input('seo_title');
+        $post->seo_key = $request->input('seo_key');
+        $post->seo_desc = $request->input('seo_desc');
+
+        $post->save();
+
+        if (isset($request->tags)) {
+            $post->tags()->sync($request->tags);
+        } else {
+            $post->tags()->sync(array());
+        }
+
+        // set flash data with success message
+        Session::flash('success', 'This post was successfully saved.');
+
+        // redirect with flash data to posts.show
+        return redirect()->route('blog.show', $post->id);
     }
 
     /**
@@ -151,22 +181,22 @@ use App\Article;
 
     }
 
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return Response
      */
+
     public function destroy($id)
     {
-        // delete
         $post = Article::find($id);
+        $post->tags()->detach();
+
         $post->delete();
 
-        // redirect
-        Session::flash('message', 'Successfully deleted the post!');
-        return Redirect::to('blog');
+        Session::flash('success', 'The post was successfully deleted.');
+        return redirect()->route('blog.index');
     }
 
 }

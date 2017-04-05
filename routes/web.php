@@ -20,6 +20,13 @@ Route::get('/', function()
 Route::get('about', 'AboutController@index');
 Route::resource('blog', 'ArticlesController');
 
+// Categories
+Route::resource('categories', 'CategoryController');
+Route::resource('tags', 'TagController');
+// Categories
+// Route::resource('categories', 'CategoryController', ['except' => ['create']]);
+// Route::resource('tags', 'TagController', ['except' => ['create']]);
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');

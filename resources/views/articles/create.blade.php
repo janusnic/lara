@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('content')
 
-<h1>Create a Post</h1>
+<h1>Create New Post</h1>
 
 {{ Html::ul($errors->all() )}}
 
@@ -10,6 +10,24 @@
 	<div class="form-group">
 		{{ Form::label('title', 'Title') }}
 		{{ Form::text('title', Input::old('title'), array('class' => 'form-control')) }}
+	</div>
+	<div class="form-group">
+	{{ Form::label('category_id', 'Category:') }}
+	<select class="form-control" name="category_id">
+		@foreach($categories as $category)
+			<option value='{{ $category->id }}'>{{ $category->name }}</option>
+		@endforeach
+
+	</select>
+
+
+	{{ Form::label('tags', 'Tags:') }}
+	<select class="form-control select2-multi" name="tags[]" multiple="multiple">
+		@foreach($tags as $tag)
+			<option value='{{ $tag->id }}'>{{ $tag->name }}</option>
+		@endforeach
+
+	</select>
 	</div>
 
 	<div class="form-group">
