@@ -1,8 +1,10 @@
-@extends('layouts.default')
+@extends('layouts.adm')
 
 @section('title', '| Edit Blog Post')
 
 @section('stylesheets')
+
+	{!! Html::style('css/select2.min.css') !!}
 
 @endsection
 
@@ -21,7 +23,7 @@
 			{{ Form::select('tags[]', $tags, null, ['class' => 'form-control select2-multi', 'multiple' => 'multiple']) }}
 
 			{{ Form::label('summary', "Summary:", ['class' => 'form-spacing-top']) }}
-			{{ Form::textarea('summary', null, ['class' => 'form-control']) }}
+			{{ Form::text('summary', null, ['class' => 'form-control']) }}
 
 			{{ Form::label('content', "Content:", ['class' => 'form-spacing-top']) }}
 			{{ Form::textarea('content', null, ['class' => 'form-control']) }}
@@ -38,6 +40,7 @@
 
 		<div class="col-md-4">
 			<div class="well">
+				<div class="row">
 				<dl class="dl-horizontal">
 					<dt>Created At:</dt>
 					<dd>{{ date('M j, Y h:ia', strtotime($post->created_at)) }}</dd>
@@ -47,6 +50,7 @@
 					<dt>Last Updated:</dt>
 					<dd>{{ date('M j, Y h:ia', strtotime($post->updated_at)) }}</dd>
 				</dl>
+			</div>
 				<hr>
 				<div class="row">
 					<div class="col-sm-6">
@@ -75,3 +79,13 @@
 	</div>	<!-- end of .row (form) -->
 
 @stop
+@section('scripts')
+// Select2
+	{!! Html::script('js/select2.min.js') !!}
+
+	<script type="text/javascript">
+		$('.select2-multi').select2();
+		$('.select2-multi').select2().val({!! json_encode($post->tags()->allRelatedIds()->toArray()) !!}).trigger('change');
+	</script>
+
+@endsection

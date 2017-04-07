@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Article;
 use App\Tag;
 use App\Category;
+use Purifier;
 
  class ArticlesController extends Controller
 {
@@ -63,7 +64,7 @@ use App\Category;
         $post->slug = str_slug($post->title);
         $post->category_id = $request->category_id;
         $post->summary = $request->summary;
-        $post->content = $request->content;
+        $post->content = Purifier::clean($request->content);
 
         $post->seen =  $request->seen;
         $post->active = $request->active;
@@ -141,7 +142,7 @@ use App\Category;
         $post->slug = str_slug($post->title);
         $post->category_id = $request->input('category_id');
         $post->summary = $request->input('summary');
-        $post->content = $request->input('content');
+        $post->content = Purifier::clean($request->input('content'));
 
         $post->seen =  $request->input('seen');
         $post->active =  $request->input('active');

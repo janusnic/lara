@@ -17,7 +17,7 @@ Route::get('/', function()
 });
 
 
-Route::get('about', 'AboutController@index');
+Route::get('/', 'IndexController@index');
 Route::resource('blog', 'ArticlesController');
 
 // Categories
@@ -26,6 +26,8 @@ Route::resource('tags', 'TagController');
 // Categories
 // Route::resource('categories', 'CategoryController', ['except' => ['create']]);
 // Route::resource('tags', 'TagController', ['except' => ['create']]);
+
+Route::resource('posts', 'IndexController', ['except' => ['create']]);
 
 Auth::routes();
 

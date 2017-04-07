@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.adm')
 
 @section('title', "| Edit Tag")
 

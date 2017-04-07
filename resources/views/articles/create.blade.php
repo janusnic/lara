@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.adm')
 @section('content')
 
 <h1>Create New Post</h1>

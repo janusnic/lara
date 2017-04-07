@@ -1,4 +1,4 @@
-@extends('layouts.default')
+@extends('layouts.adm')
 @section('content')
 
     <h1>All Posts</h1>
@@ -6,7 +6,7 @@
     @if (Session::has('message'))
        <div class="alert alert-info">{{ Session::get('message') }}</div>
     @endif
-
+<a href="{{ URL::to('blog/create') }}">Create a Post</a>
     <table class="table table-striped table-bordered">
        <thead>
            <tr>
