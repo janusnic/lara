@@ -22,7 +22,7 @@ use Purifier;
      */
     public function index()
     {
-        $articles = Article::all();
+        $articles = Article::paginate(2);
 
         return view('articles.index', compact('articles'));
     }
@@ -119,22 +119,13 @@ use Purifier;
         // Validate the data
         $post = Article::find($id);
 
-        if ($request->input('slug') == $post->slug) {
-            $this->validate($request, array(
-                'title'         => 'required|max:255',
-                'category_id'   => 'required|integer',
-                'summary'      => 'required',
-                'content' => 'required'
-            ));
-        } else {
         $this->validate($request, array(
                 'title' => 'required|max:255',
-                'slug'  => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
+                // 'slug'  => 'required|alpha_dash|min:5|max:255|unique:posts,slug',
                 'category_id' => 'required|integer',
                 'summary'      => 'required',
                 'content' => 'required'
             ));
-        }
 
         $post = Article::find($id);;
         $post->title = $request->input('title');

@@ -26,23 +26,30 @@ class IndexController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
-        //$articles = Article::orderBy('created_at', 'desc')->take(10)->get();
+        //$articles = Article::orderBy('created_at', 'desc')->take(10)->simplePaginate(2);
         //$articles = Article::latest()->get();
-
+        $articles = Article::paginate(2);
         return view('front.index', compact('articles'));
-        //return view('front.index');
-
     }
 
     public function show($id)
     {
-
-        $articles = Article::find($id);
-
+        $article = Article::find($id);
         return view('front.show')
-                    ->with('articles', $articles);
-
+                    ->with('article', $article);
     }
 
+
+    public function list() {
+		$articles = Article::paginate(2);
+		return view('front.index')->withArticles($articles);
+	}
+
+    public function getSingle($slug) {
+    	// fetch from the DB based on slug
+    	$article = Article::where('slug', '=', $slug)->first();
+
+    	// return the view and pass in the post object
+    	return view('front.single')->withArticle($article);
+    }
 }

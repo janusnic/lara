@@ -37,6 +37,13 @@
                </td>
            </tr>
        @endforeach
+       <nav>
+         <ul class="pager">
+
+             {{ $articles->links() }}
+         </ul>
+       </nav>
+
        </tbody>
     </table>
 @stop

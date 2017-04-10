@@ -18,6 +18,8 @@ Route::get('/', function()
 
 
 Route::get('/', 'IndexController@index');
+Route::get('/cats', 'CategoryController@list');
+Route::get('/cats/{id}', 'CategoryController@show');
 Route::resource('blog', 'ArticlesController');
 
 // Categories

@@ -1,10 +1,20 @@
 <meta charset="utf-8">
 <meta name="description" content="">
 <meta name="author" content="Janus">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Super Cool Layouts</title>
+<!-- CSRF Token -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-<!-- load bootstrap from a cdn -->
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-<link rel="stylesheet" href="/css/styles.css">
+<title>{{ config('app.name', 'Laravel') }}</title>
+
+<!-- Styles -->
+<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+<!-- Scripts -->
+<script>
+    window.Laravel = {!! json_encode([
+        'csrfToken' => csrf_token(),
+    ]) !!};
+</script>

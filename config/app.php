@@ -165,6 +165,7 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
         Mews\Purifier\PurifierServiceProvider::class,
+        Arrilot\Widgets\ServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -233,6 +234,9 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Input' => Illuminate\Support\Facades\Input::class,
         'Purifier' => Mews\Purifier\Facades\Purifier::class,
+
+        'Widget'       => Arrilot\Widgets\Facade::class,
+        'AsyncWidget'  => Arrilot\Widgets\AsyncFacade::class,
 
     ],
 

@@ -29,6 +29,16 @@ class CategoryController extends Controller
 
     }
 
+    public function list()
+    {
+        $categories = Category::with(['articles' => function($query){
+            $query->orderBy('updated_at', 'DESC')->paginate(4);
+        }])->get();
+
+        return view('categories.articles', compact('categories'));
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -60,7 +70,10 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        // Display the category and all the posts in that category
+           $category = Category::with(['articles' => function($query){
+               $query->orderBy('updated_at', 'DESC')->paginate(4);
+           }])->find($id);
+                return view('categories.single', compact('category'));
     }
 
     /**
