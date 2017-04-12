@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-//use ZaLaravel\LaravelStaticPages\Requests\StaticPageRequest;
+use App\Interfaces\StaticPagesInterface;
+//use App\Http\Requests\StaticPageRequest;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Page;
-use Session;
+//use App\Page;
+//use Session;
 
 
 class AdminPageController extends Controller
@@ -28,13 +28,13 @@ class AdminPageController extends Controller
             ['action' => 'create', 'page' => $page]);
     }
 
-    public function store(StaticPagesInterface $page, StaticPageRequest $request)
+    public function store(StaticPagesInterface $page, Request $request)
     {
         $input = $request->all();
         $page->fill($input);
         $page->save();
 
-        return redirect()->route('admin.page.index');
+        return redirect()->route('page.index');
     }
 
     public function show($id)
@@ -47,20 +47,20 @@ class AdminPageController extends Controller
         return view('laravel-static-pages::edit', ['action' => 'edit', 'page' => $page]);
     }
 
-    public function update(StaticPagesInterface $page, StaticPageRequest $request)
+    public function update(StaticPagesInterface $page, Request $request)
     {
         $input = $request->all();
         $page->fill($input);
         $page->save();
 
-        return redirect()->route('admin.page.index');
+        return redirect()->route('page.index');
     }
 
     public function destroy(StaticPagesInterface $page)
     {
         $page->delete();
 
-        return redirect()->route('admin.page.index');
+        return redirect()->route('page.index');
     }
 
 }

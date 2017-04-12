@@ -39,3 +39,7 @@ Route::get('/admin','AdminController@index');
 Route::get('/admin/login',['as' => 'admin.login','uses' => 'Admin\LoginController@showLoginForm']);
 Route::post('/admin/login',['uses' => 'Admin\LoginController@login']);
 Route::post('/admin/logout',['as' => 'admin.logout','uses' => 'Admin\LoginController@logout']);
+
+Route::get('/{slug}', 'FrontPageController@index');
+Route::model('page', 'App\Page');
+Route::resource('/admin/page', 'AdminPageController');

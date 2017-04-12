@@ -20,7 +20,7 @@
             <!-- Left Side Of Navbar -->
             <ul class="nav navbar-nav">
                 <li><a href="{{ URL::to('posts') }}">Blog</a></li>
-                <li><a href="{{ URL::to('posts/list') }}">All Post</a>
+                <li><a href="{{ URL::to('/about') }}">About</a>
             </ul>
 
             <!-- Right Side Of Navbar -->
