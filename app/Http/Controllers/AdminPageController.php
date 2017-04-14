@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\StaticPagesInterface;
-//use App\Http\Requests\StaticPageRequest;
 
 use Illuminate\Http\Request;
-
-//use App\Page;
-//use Session;
 
 
 class AdminPageController extends Controller

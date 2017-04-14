@@ -3,6 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
+use App\Tag;
+use App\Comment;
 
 class Article extends Model
 {
@@ -16,5 +19,14 @@ class Article extends Model
     	return $this->belongsToMany('App\Tag');
     }
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }

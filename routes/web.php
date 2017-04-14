@@ -29,6 +29,8 @@ Route::resource('tags', 'TagController');
 // Route::resource('categories', 'CategoryController', ['except' => ['create']]);
 // Route::resource('tags', 'TagController', ['except' => ['create']]);
 
+
+Route::get('posts/tag', 'IndexController@tag');
 Route::resource('posts', 'IndexController', ['except' => ['create']]);
 
 Auth::routes();

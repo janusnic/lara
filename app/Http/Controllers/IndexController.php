@@ -3,53 +3,44 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\BlogRepository;
 use App\Article;
 use App\Tag;
+use App\User;
 use App\Category;
+use App\Repositories\BlogRepositoryInterface;
 
 class IndexController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected $blogRepository;
+
+    public function __construct(BlogRepository $blogRepository)
+    //public function __construct(BlogRepositoryInterface $blogRepository)
     {
-        //$this->middleware('auth');
+        $this->blogRepository = $blogRepository;
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //$articles = Article::orderBy('created_at', 'desc')->take(10)->simplePaginate(2);
-        //$articles = Article::latest()->get();
-        $articles = Article::paginate(2);
+        $articles = $this->blogRepository->getActiveOrderByDate(2);
         return view('front.index', compact('articles'));
+
     }
 
-    public function show($id)
+    public function show(Request $request, $slug)
     {
-        $article = Article::find($id);
-        return view('front.show')
-                    ->with('article', $article);
+        $user = $request->user();
+        return view('front.show', array_merge($this->blogRepository->getArticleBySlug($slug), compact('user')));
     }
 
+    public function tag(Request $request)
+    {
+        $tag = $request->input('tag');
+        $articles = $this->blogRepository->getActiveOrderByDateForTag(2, $tag);
+        $links = $articles->appends(compact('tag'))->links();
+        $info = 'Tags: ' . '<strong>' . $this->blogRepository->getTagById($tag) . '</strong>';
 
-    public function list() {
-		$articles = Article::paginate(2);
-		return view('front.index')->withArticles($articles);
-	}
-
-    public function getSingle($slug) {
-    	// fetch from the DB based on slug
-    	$article = Article::where('slug', '=', $slug)->first();
-
-    	// return the view and pass in the post object
-    	return view('front.single')->withArticle($article);
+        return view('front.index', compact('articles', 'links', 'info'));
     }
 }

@@ -16,14 +16,14 @@
 
             <p>{{ $value->summary }}</p>
             <hr>
-            <a href="{{ route('posts.show', $value->id) }}" class="btn btn-primary">Read more</a>
+            <a href="{{ route('posts.show', $value->slug) }}" class="btn btn-primary">Read more</a>
           </div><!-- /.blog-post -->
         @endforeach
 
         <nav>
           <ul class="pager">
               <?php echo $articles->render(); ?>
-              
+
           </ul>
         </nav>
 
