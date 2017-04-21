@@ -172,6 +172,9 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
 
+        Cviebrock\EloquentSluggable\ServiceProvider::class,
+        Dimsav\Translatable\TranslatableServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -183,7 +186,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Janusnic\Validation\ValidationServiceProvider::class,
+        //Janusnic\Validation\ValidationServiceProvider::class,
 
     ],
 

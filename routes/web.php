@@ -12,6 +12,9 @@
 */
 
 Route::get('/', 'IndexController@index');
+Route::get('/post', ['as' => 'blog', 'uses' => 'PostController@index']);
+
+Route::get('post/{slug}', ['as' => 'post.show', 'uses' => 'PostController@show']);
 
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
