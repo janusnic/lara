@@ -1,35 +1,24 @@
 <?php
 namespace App;
 
+// use Illuminate\Notifications\Notifiable;
+// use Illuminate\Foundation\Auth\User as Authenticatable;
+
+
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Hash;
 
-/**
- * Class User
- *
- * @package App
- * @property string $name
- * @property string $email
- * @property string $password
- * @property string $role
- * @property string $remember_token
-*/
-class User extends Authenticatable
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Notifiable;
+    use Authenticatable, CanResetPassword, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['name', 'email', 'password', 'remember_token', 'role_id'];
+    protected $guarded = ['id'];
 
-    /**
-     * Hash password
-     * @param $input
-     */
     public function setPasswordAttribute($input)
     {
         if ($input)
@@ -58,6 +47,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function social()
+    {
+        return $this->hasMany('App\Social');
+    }
 
     public function profile()
     {

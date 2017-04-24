@@ -167,6 +167,8 @@ return [
         Mews\Purifier\PurifierServiceProvider::class,
         Arrilot\Widgets\ServiceProvider::class,
 
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
         /*
          * Package Service Providers...
          */
@@ -244,6 +246,8 @@ return [
 
         'Widget'       => Arrilot\Widgets\Facade::class,
         'AsyncWidget'  => Arrilot\Widgets\AsyncFacade::class,
+
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

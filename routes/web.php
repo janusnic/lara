@@ -16,6 +16,17 @@ Route::get('/post', ['as' => 'blog', 'uses' => 'PostController@index']);
 
 Route::get('post/{slug}', ['as' => 'post.show', 'uses' => 'PostController@show']);
 
+Route::get('login/github', 'Auth\LoginController@redirectToProvider')->name('auth.github'); 
+Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
+
+// Route::get('auth/github', 'Auth\AuthController@redirectToProvider');
+// Route::get('auth/github/callback', 'Auth\AuthController@handleProviderCallback');
+
+$s = 'social.';
+Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\SocialController@getSocialRedirect']);
+Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\SocialController@getSocialHandle']);
+
+
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
 $this->post('login', 'Auth\LoginController@login')->name('auth.login');
@@ -42,33 +53,3 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('users_mass_destroy', ['uses' => 'UsersController@massDestroy', 'as' => 'users.mass_destroy']);
 
 });
-
-
-//Route::resource('home', 'HomeController');
-// Route::get('/cats', 'CategoryController@list');
-// Route::get('/cats/{id}', 'CategoryController@show');
-// Route::resource('blog', 'ArticlesController');
-//
-// // Categories
-// Route::resource('categories', 'CategoryController');
-// Route::resource('tags', 'TagController');
-//
-
-// Categories
-// Route::resource('categories', 'CategoryController', ['except' => ['create']]);
-// Route::resource('tags', 'TagController', ['except' => ['create']]);
-
-
-
-// Route::get('posts/tag', 'IndexController@tag');
-// Route::resource('posts', 'IndexController', ['except' => ['create']]);
-//
-// Route::get('/admin/login',['as' => 'admin.login','uses' => 'Admin\LoginController@showLoginForm']);
-// Route::post('/admin/login',['uses' => 'Admin\LoginController@login']);
-// Route::post('/admin/logout',['as' => 'admin.logout','uses' => 'Admin\LoginController@logout']);
-//
-// Auth::routes();
-//Route::get('/home', 'HomeController@index');
-// Route::get('/{slug}', 'FrontPageController@index');
-// Route::model('page', 'App\Page');
-// Route::resource('/admin/page', 'AdminPageController');
