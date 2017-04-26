@@ -74,8 +74,8 @@ Route::resource('tags', 'TagController');
 Route::get('posts/tag', 'IndexController@tag');
 Route::resource('posts', 'IndexController', ['except' => ['create']]);
 
-Route::post('favorite/{post}', 'IndexController@favoriteArticle');
-Route::post('unfavorite/{post}', 'IndexController@unFavoriteArticle');
+Route::post('favorite/{article}', 'ArticlesController@favoriteArticle');
+Route::post('unfavorite/{article}', 'ArticlesController@unFavoriteArticle');
 
 Route::get('my_favorites', 'UsersController@myFavorites')->middleware('auth');
 

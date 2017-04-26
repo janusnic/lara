@@ -57,12 +57,12 @@ const app = new Vue({
   }
 });
 
-//Vue.component('favorite', require('./components/Favorite.vue'));
+Vue.component('favorite', require('./components/Favorite.vue'));
 
 const app1 = new Vue({
   //
   el: '#app1',
-  components: {
-    'favorite': require('./components/Favorite.vue')
-  }
+  // components: {
+  //   'favorite': require('./components/Favorite.vue')
+  // }
 });

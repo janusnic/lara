@@ -15,12 +15,12 @@ use Purifier;
 
  class ArticlesController extends Controller
 {
-    protected $user;
+    //protected $user;
     public function __construct()
     {
         //$this->middleware('isAdmin');
-         $this->middleware('auth');
-         $this->user =  \Auth::user();
+        //  $this->middleware('auth');
+        //  $this->user =  \Auth::user();
     }
 
     /**
@@ -212,11 +212,24 @@ use Purifier;
         }
     }
 
+    public function favoriteArticle(Article $article)
+    {
+        Auth::user()->favorites()->attach($article->id);
+        return back();
+    }
 
     /**
-     * Favorite a particular post
+     * Unfavorite a particular post
      *
      * @param  Article $article
      * @return Response
      */
+    public function unFavoriteArticle(Article $article)
+    {
+        Auth::user()->favorites()->detach($article->id);
+
+        return back();
+    }
+
+
 }

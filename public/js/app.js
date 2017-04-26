@@ -829,14 +829,11 @@ var app = new Vue({
   }
 });
 
-//Vue.component('favorite', require('./components/Favorite.vue'));
+Vue.component('favorite', __webpack_require__(34));
 
 var app1 = new Vue({
   //
-  el: '#app1',
-  components: {
-    'favorite': __webpack_require__(34)
-  }
+  el: '#app1'
 });
 
 /***/ }),
@@ -1705,7 +1702,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['post', 'favorited'],
+    props: ['article', 'favorited'],
 
     data: function data() {
         return {
@@ -1725,19 +1722,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        favorite: function favorite(post) {
+        favorite: function favorite(article) {
             var _this = this;
 
-            axios.post('/favorite/' + post).then(function (response) {
+            axios.post('/favorite/' + article).then(function (response) {
                 return _this.isFavorited = true;
             }).catch(function (response) {
                 return console.log(response.data);
             });
         },
-        unFavorite: function unFavorite(post) {
+        unFavorite: function unFavorite(article) {
             var _this2 = this;
 
-            axios.post('/unfavorite/' + post).then(function (response) {
+            axios.post('/unfavorite/' + article).then(function (response) {
                 return _this2.isFavorited = false;
             }).catch(function (response) {
                 return console.log(response.data);
@@ -31821,7 +31818,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": function($event) {
         $event.preventDefault();
-        _vm.unFavorite(_vm.post)
+        _vm.unFavorite(_vm.article)
       }
     }
   }, [_c('i', {
@@ -31833,7 +31830,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "click": function($event) {
         $event.preventDefault();
-        _vm.favorite(_vm.post)
+        _vm.favorite(_vm.article)
       }
     }
   }, [_c('i', {

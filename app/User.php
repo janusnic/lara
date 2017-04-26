@@ -4,6 +4,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Hash;
+use App\Article;
 
 /**
  * Class User
@@ -62,6 +63,11 @@ class User extends Authenticatable
     public function profile()
     {
         return $this->hasOne('Profile');
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(Article::class, 'favorites', 'user_id', 'article_id')->withTimeStamps();
     }
 
 }

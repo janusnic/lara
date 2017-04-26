@@ -160,7 +160,6 @@ class UsersController extends Controller
     public function myFavorites()
     {
         $myFavorites = Auth::user()->favorites;
-
         return view('users.my_favorites', compact('myFavorites'));
     }
 }

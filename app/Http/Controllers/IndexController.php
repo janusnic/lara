@@ -23,9 +23,10 @@ class IndexController extends Controller
 
     public function index()
     {
-        $articles = $this->blogRepository->getActiveOrderByDate(2);
+        // $articles = $this->blogRepository->getActiveOrderByDate(2);
+        // return view('front.index', compact('articles'));
+        $articles = Article::paginate(5);
         return view('front.index', compact('articles'));
-
     }
 
     public function show(Request $request, $slug)
@@ -44,24 +45,5 @@ class IndexController extends Controller
         return view('front.index', compact('articles', 'links', 'info'));
     }
 
-    public function favoriteArticle(Article $article)
-    {
-        Auth::user()->favorites()->attach($article->id);
-
-        return back();
-    }
-
-    /**
-     * Unfavorite a particular post
-     *
-     * @param  Article $article
-     * @return Response
-     */
-    public function unFavoriteArticle(Article $article)
-    {
-        Auth::user()->favorites()->detach($article->id);
-
-        return back();
-    }
-
+    
 }

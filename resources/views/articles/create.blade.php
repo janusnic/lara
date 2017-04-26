@@ -66,8 +66,6 @@
 		{{ Form::text('seo_desc', Input::old('seo_desc'), array('class' => 'form-control')) }}
 	</div>
 
-    {{ Form::hidden('user', Input::old(), array('class' => 'form-control')) }}
-
 	{{ Form::submit('Create the Article!', array('class' => 'btn btn-primary')) }}
 
 {{ Form::close() }}

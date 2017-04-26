@@ -1,9 +1,9 @@
 <template>
     <span>
-        <a href="#" v-if="isFavorited" @click.prevent="unFavorite(post)">
+        <a href="#" v-if="isFavorited" @click.prevent="unFavorite(article)">
             <i  class="fa fa-heart"></i>
         </a>
-        <a href="#" v-else @click.prevent="favorite(post)">
+        <a href="#" v-else @click.prevent="favorite(article)">
             <i  class="fa fa-heart-o"></i>
         </a>
     </span>
@@ -11,7 +11,7 @@
 
 <script>
     export default {
-        props: ['post', 'favorited'],
+        props: ['article', 'favorited'],
 
         data: function() {
             return {
@@ -30,14 +30,14 @@
         },
 
         methods: {
-            favorite(post) {
-                axios.post('/favorite/'+post)
+            favorite(article) {
+                axios.post('/favorite/'+article)
                     .then(response => this.isFavorited = true)
                     .catch(response => console.log(response.data));
             },
 
-            unFavorite(post) {
-                axios.post('/unfavorite/'+post)
+            unFavorite(article) {
+                axios.post('/unfavorite/'+article)
                     .then(response => this.isFavorited = false)
                     .catch(response => console.log(response.data));
             }

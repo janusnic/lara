@@ -18,7 +18,7 @@
             @if (Auth::check())
                 <div class="panel-footer">
                     <favorite
-                        :post={{ $article->id }}
+                        :article={{ $article->id }}
                         :favorited={{ $article->favorited() ? 'true' : 'false' }}
                     >
                     </favorite>
