@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 interface BlogRepositoryInterface
 {
+    
     public function queryActiveOrderByDate();
     public function getById($id);
     public function getActiveOrderByDate($n);

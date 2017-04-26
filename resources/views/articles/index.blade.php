@@ -1,49 +1,63 @@
-@extends('layouts.adm')
+@extends('layouts.home')
+
 @section('content')
+    <h3 class="page-title">Articles List</h3>
+    <p>
+        <a href="{{ route('articles.create') }}" class="btn btn-success">Add new</a>
+    </p>
 
-    <h1>All Posts</h1>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @lang('quickadmin.qa_list')
+        </div>
 
-    @if (Session::has('message'))
-       <div class="alert alert-info">{{ Session::get('message') }}</div>
-    @endif
-<a href="{{ URL::to('blog/create') }}" class="btn btn-small btn-info">Create a Post</a>
-    <table class="table table-striped table-bordered">
-       <thead>
-           <tr>
-               <td>ID</td>
-               <td>Title</td>
-               <td>Active</td>
-               <td>Actions</td>
-           </tr>
-       </thead>
-       <tbody>
+        <div class="panel-body table-responsive">
+            <table class="table table-bordered table-striped {{ count($articles) > 0 ? 'datatable' : '' }} dt-select">
+                <thead>
+                    <tr>
+                            <th style="text-align:center;"><input type="checkbox" id="select-all" /></th>
+                        <th>Id</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
 
-       @foreach ($articles as $key => $value)
-           <tr>
-               <td>{{ $value->id }}</td>
-               <td>{{ $value->title }}</td>
-               <td>{{ $value->active }}</td>
-               <td>
+                <tbody>
+                    @if (count($articles) > 0)
+                        @foreach ($articles as $article)
+                            <tr data-entry-id="{{ $article->id }}">
+                                    <td></td>
+                                <td>{{ $article->id }}</td>
+                                <td>{{ $article->title }}</td>
+                                <td>{{ $article->active }}</td>
+                                <td>
 
-                   {{ Form::open(array('url' => 'blog/' . $value->id, 'class' => 'pull-right')) }}
-                       {{ Form::hidden('_method', 'DELETE') }}
-                       {{ Form::submit('Delete this Post', array('class' => 'btn btn-warning')) }}
-                   {{ Form::close() }}
-
-                   <a class="btn btn-small btn-success" href="{{ URL::to('blog/' . $value->id) }}">Show</a>
-
-                   <a class="btn btn-small btn-info" href="{{ URL::to('blog/' . $value->id . '/edit') }}">Edit</a>
-
-               </td>
-           </tr>
-       @endforeach
-       <nav>
-         <ul class="pager">
-
-             {{ $articles->links() }}
-         </ul>
-       </nav>
-
-       </tbody>
-    </table>
+                                    <a href="{{ route('articles.show',[$article->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
+                                    <a href="{{ route('articles.edit',[$article->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
+                                    {!! Form::open(array(
+                                        'style' => 'display: inline-block;',
+                                        'method' => 'DELETE',
+                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
+                                        'route' => ['articles.destroy', $article->id])) !!}
+                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
+                                    {!! Form::close() !!}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="9">@lang('quickadmin.qa_no_entries_in_table')</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
 @stop
+
+@section('javascript')
+    <script>
+            window.route_mass_crud_entries_destroy = '{{ route('articles.mass_destroy') }}';
+    </script>
+@endsection

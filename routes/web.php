@@ -12,20 +12,15 @@
 */
 
 Route::get('/', 'IndexController@index');
-Route::get('/post', ['as' => 'blog', 'uses' => 'PostController@index']);
 
-Route::get('post/{slug}', ['as' => 'post.show', 'uses' => 'PostController@show']);
+Route::get ( '/cat', function () {
+	return view ( 'welcome' );
+} );
 
-Route::get('login/github', 'Auth\LoginController@redirectToProvider')->name('auth.github'); 
-Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
 
-// Route::get('auth/github', 'Auth\AuthController@redirectToProvider');
-// Route::get('auth/github/callback', 'Auth\AuthController@handleProviderCallback');
-
-$s = 'social.';
-Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\SocialController@getSocialRedirect']);
-Route::get('/social/handle/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\SocialController@getSocialHandle']);
-
+Route::post ( '/vueitems', 'MainController@storeItem' );
+Route::get ( '/vueitems', 'MainController@readItems' );
+Route::post ( '/vueitems/{id}', 'MainController@deleteItem' );
 
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
@@ -51,5 +46,45 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('roles_mass_destroy', ['uses' => 'RolesController@massDestroy', 'as' => 'roles.mass_destroy']);
     Route::resource('users', 'UsersController');
     Route::post('users_mass_destroy', ['uses' => 'UsersController@massDestroy', 'as' => 'users.mass_destroy']);
+    //Route::resource('categories', 'CategoryController');
+    Route::get ( '/cat', 'CategoryController@index')->name('categories.index');
+    Route::post ( '/categories', 'CategoryController@store' );
+    Route::get ( '/categories', 'CategoryController@readItems' );
+    Route::post ( '/categories/{id}', 'CategoryController@destroy' );
+	Route::resource('articles', 'ArticlesController');
+	Route::post('articles_mass_destroy', ['uses' => 'ArticlesController@massDestroy', 'as' => 'articles.mass_destroy']);
 
 });
+
+
+//Route::resource('home', 'HomeController');
+Route::get('/cats', 'CategoryController@list');
+Route::get('/cats/{id}', 'CategoryController@show');
+//Route::resource('blog', 'ArticlesController');
+
+// Categories
+//Route::resource('categories', 'CategoryController');
+Route::resource('tags', 'TagController');
+
+
+// Categories
+//Route::resource('categories', 'CategoryController', ['except' => ['create']]);
+//Route::resource('tags', 'TagController', ['except' => ['create']]);
+
+Route::get('posts/tag', 'IndexController@tag');
+Route::resource('posts', 'IndexController', ['except' => ['create']]);
+
+Route::post('favorite/{post}', 'IndexController@favoriteArticle');
+Route::post('unfavorite/{post}', 'IndexController@unFavoriteArticle');
+
+Route::get('my_favorites', 'UsersController@myFavorites')->middleware('auth');
+
+// Route::get('/admin/login',['as' => 'admin.login','uses' => 'Admin\LoginController@showLoginForm']);
+// Route::post('/admin/login',['uses' => 'Admin\LoginController@login']);
+// Route::post('/admin/logout',['as' => 'admin.logout','uses' => 'Admin\LoginController@logout']);
+
+// Auth::routes();
+// Route::get('/home', 'HomeController@index');
+// Route::get('/{slug}', 'FrontPageController@index');
+// Route::model('page', 'App\Page');
+// Route::resource('/admin/page', 'AdminPageController');

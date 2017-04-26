@@ -24,18 +24,21 @@ class CategoryController extends Controller
         // display a view of all of our categories
         // it will also have a form to create a new category
 
-        $categories = Category::all();
-        return view('categories.index')->withCategories($categories);
+        //$data = Category::all();
+        return view('categories.vue_index');
 
     }
 
-    public function list()
+    public function readItems()
     {
-        $categories = Category::with(['articles' => function($query){
-            $query->orderBy('updated_at', 'DESC')->paginate(4);
-        }])->get();
+        // $categories = Category::with(['articles' => function($query){
+        //     $query->orderBy('updated_at', 'DESC')->paginate(4);
+        // }])->get();
+        //
+        // return view('categories.articles', compact('categories'));
+        $data = Category::all();
+        return $data;
 
-        return view('categories.articles', compact('categories'));
     }
 
 
@@ -57,9 +60,11 @@ class CategoryController extends Controller
         $category->name = $request->name;
         $category->save();
 
-        Session::flash('success', 'New Category has been created');
+        //Session::flash('success', 'New Category has been created');
+        $data = $category;
 
-        return redirect()->route('categories.index');
+        //return redirect()->route('categories.index');
+        return $data;
     }
 
     /**
@@ -105,8 +110,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         //
+        $data = Category::find ( $request->id )->delete();
     }
 }

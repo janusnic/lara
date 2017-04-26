@@ -8,7 +8,7 @@ use App\Article;
 use App\Tag;
 use App\User;
 use App\Category;
-use App\Repositories\BlogRepositoryInterface;
+//use App\Repositories\BlogRepository;
 
 class IndexController extends Controller
 {
@@ -43,4 +43,25 @@ class IndexController extends Controller
 
         return view('front.index', compact('articles', 'links', 'info'));
     }
+
+    public function favoriteArticle(Article $article)
+    {
+        Auth::user()->favorites()->attach($article->id);
+
+        return back();
+    }
+
+    /**
+     * Unfavorite a particular post
+     *
+     * @param  Article $article
+     * @return Response
+     */
+    public function unFavoriteArticle(Article $article)
+    {
+        Auth::user()->favorites()->detach($article->id);
+
+        return back();
+    }
+
 }

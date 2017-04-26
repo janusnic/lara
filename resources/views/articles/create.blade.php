@@ -1,11 +1,12 @@
-@extends('layouts.adm')
+@extends('layouts.home')
+
 @section('content')
 
 <h1>Create New Post</h1>
 
 {{ Html::ul($errors->all() )}}
 
-{{ Form::open(array('url' => 'blog')) }}
+{{ Form::open(array('url' => 'articles')) }}
 
 	<div class="form-group">
 		{{ Form::label('title', 'Title') }}
@@ -64,6 +65,8 @@
 		{{ Form::label('seo_desc', 'Seo seo_desc') }}
 		{{ Form::text('seo_desc', Input::old('seo_desc'), array('class' => 'form-control')) }}
 	</div>
+
+    {{ Form::hidden('user', Input::old(), array('class' => 'form-control')) }}
 
 	{{ Form::submit('Create the Article!', array('class' => 'btn btn-primary')) }}
 

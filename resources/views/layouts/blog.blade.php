@@ -18,7 +18,7 @@
         </div>
 
         <!-- main content -->
-        <div id="content" class="col-md-8">
+        <div class="col-md-8">
             @yield('content')
         </div>
 
@@ -29,6 +29,6 @@
     </footer>
 
     </div>
-
+<script src="/js/app.js"></script>
 </body>
 </html>

@@ -73,10 +73,6 @@
                                 </button>
                             </div>
                         </div>
-                        <hr>
-                        <p class="or-social">Or Use Social Login</p>
-
-                        @include('partials.socials')
                     </form>
                 </div>
             </div>

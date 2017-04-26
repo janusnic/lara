@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,11 +12,10 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Request $request)
+    public function boot()
     {
         //
         //Schema::defaultStringLength(191);
-        app()->setLocale($request->segment(1));
     }
 
     /**
@@ -28,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $this->app->bind('App\Repositories\BlogRepositoryInterface', 'App\Repositories\ArticleRepository');
+        //$this->app->bind('App\Repositories\BlogRepositoryInterface', 'App\Repositories\ArticleRepository');
     }
 }

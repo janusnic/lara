@@ -6,7 +6,7 @@ use App\Article;
 use App\Tag;
 use App\Category;
 use App\User;
-use App\Comment;
+
 
 class BlogRepository extends BaseRepository
 {
@@ -14,12 +14,12 @@ class BlogRepository extends BaseRepository
 
     protected $comment;
 
-    public function __construct(Article $article, Tag $tag, Category $category, Comment $comment)
+    public function __construct(Article $article, Tag $tag, Category $category)
     {
         $this->model = $article;
         $this->tag = $tag;
         $this->category = $category;
-        $this->comment = $comment;
+
     }
 
     protected function queryActiveOrderByDate()
@@ -57,11 +57,7 @@ class BlogRepository extends BaseRepository
     {
         $article = $this->model->with('tags')->whereSlug($slug)->firstOrFail();
 
-        $comments = $this->comment
-            ->whereArticleId($article->id)
-            ->with('user')
-            ->get();
-        return compact('article', 'comments');
+        return compact('article');
     }
 
 

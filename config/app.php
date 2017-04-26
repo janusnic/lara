@@ -167,15 +167,10 @@ return [
         Mews\Purifier\PurifierServiceProvider::class,
         Arrilot\Widgets\ServiceProvider::class,
 
-        Laravel\Socialite\SocialiteServiceProvider::class,
-
         /*
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
-
-        Cviebrock\EloquentSluggable\ServiceProvider::class,
-        Dimsav\Translatable\TranslatableServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -246,8 +241,6 @@ return [
 
         'Widget'       => Arrilot\Widgets\Facade::class,
         'AsyncWidget'  => Arrilot\Widgets\AsyncFacade::class,
-
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

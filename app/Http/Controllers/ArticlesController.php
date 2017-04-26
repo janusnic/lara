@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use App\Article;
 use App\Tag;
 use App\Category;
@@ -14,6 +15,13 @@ use Purifier;
 
  class ArticlesController extends Controller
 {
+    protected $user;
+    public function __construct()
+    {
+        //$this->middleware('isAdmin');
+         $this->middleware('auth');
+         $this->user =  \Auth::user();
+    }
 
     /**
      * Display a listing of the resource.
@@ -22,8 +30,7 @@ use Purifier;
      */
     public function index()
     {
-        $articles = Article::paginate(2);
-
+        $articles = Article::all();
         return view('articles.index', compact('articles'));
     }
 
@@ -34,8 +41,6 @@ use Purifier;
      */
     public function create()
     {
-        // load the create form (views/articles/create.blade.php)
-        // return view('articles.create');
         $categories = Category::all();
         $tags = Tag::all();
         return view('articles.create')->withCategories($categories)->withTags($tags);
@@ -65,6 +70,7 @@ use Purifier;
         $post->category_id = $request->category_id;
         $post->summary = $request->summary;
         $post->content = Purifier::clean($request->content);
+        $post->user_id = Auth::user()->id;
 
         $post->seen =  $request->seen;
         $post->active = $request->active;
@@ -78,7 +84,7 @@ use Purifier;
 
         Session::flash('success', 'The blog post was successfully save!');
 
-        return redirect()->route('blog.show', $post->id);
+        return redirect()->route('articles.show', $post->id);
     }
 
 
@@ -134,6 +140,7 @@ use Purifier;
         $post->category_id = $request->input('category_id');
         $post->summary = $request->input('summary');
         $post->content = Purifier::clean($request->input('content'));
+        $post->user_id = $this->user->id;
 
         $post->seen =  $request->input('seen');
         $post->active =  $request->input('active');
@@ -154,7 +161,7 @@ use Purifier;
         Session::flash('success', 'This post was successfully saved.');
 
         // redirect with flash data to posts.show
-        return redirect()->route('blog.show', $post->id);
+        return redirect()->route('articles.show', $post->id);
     }
 
     /**
@@ -191,4 +198,25 @@ use Purifier;
         return redirect()->route('blog.index');
     }
 
+    public function massDestroy(Request $request)
+    {
+        if (! Gate::allows('user_delete')) {
+            return abort(401);
+        }
+        if ($request->input('ids')) {
+            $entries = Article::whereIn('id', $request->input('ids'))->get();
+
+            foreach ($entries as $entry) {
+                $entry->delete();
+            }
+        }
+    }
+
+
+    /**
+     * Favorite a particular post
+     *
+     * @param  Article $article
+     * @return Response
+     */
 }

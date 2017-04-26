@@ -1,30 +1,42 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use App\Http\Controllers\Controller;
-use Socialite;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
-    /**
-     * Redirect the user to the GitHub authentication page.
-     *
-     * @return Response
-     */
-    public function redirectToProvider()
-    {
-        return Socialite::driver('github')->redirect();
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
+
+    use AuthenticatesUsers;
 
     /**
-     * Obtain the user information from GitHub.
+     * Where to redirect users after login / registration.
      *
-     * @return Response
+     * @var string
      */
-    public function handleProviderCallback()
-    {
-        $user = Socialite::driver('github')->user();
+    protected $redirectTo = '/home';
 
-        // $user->token;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->redirectAfterLogout = route('auth.login');
+        $this->redirectTo = route('home.index');
+        //$this->middleware('guest', ['except' => 'logout']);
+        $this->middleware('guest', ['except' => 'logout']);
     }
 }

@@ -44,6 +44,25 @@
                 </li>
                 @endcan
 
+                @if(Auth::user()->role_id == 1)
+                    <li class="{{ $request->segment(1) == 'articles' ? 'active' : '' }}">
+                    <a href="{{ route('articles.index') }}">
+                    <i class="fa fa-list"></i>
+                    <span class="title">Articles</span>
+                    </a>
+                    </li>
+                @endif
+
+
+                <li class="{{ $request->segment(1) == 'categories' ? 'active active-sub' : '' }}">
+                        <a href="{{ route('categories.index') }}">
+                            <i class="fa fa-list"></i>
+                            <span class="title">
+                                @lang('quickadmin.income-category.title')
+                            </span>
+                        </a>
+                </li>
+
                 <li class="{{ $request->segment(1) == 'change_password' ? 'active' : '' }}">
                     <a href="{{ route('auth.change_password') }}">
                         <i class="fa fa-key"></i>
