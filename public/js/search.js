@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -41006,90 +41006,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when building
- * robust, powerful web applications using Vue and Laravel.
- */
-
-__webpack_require__(26);
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to the
- * page. Then, you may begin adding components to this application or customize
- * the JavaScript scaffolding to fit your unique needs.
- */
-
-var app = new Vue({
-  el: '#vue-wrapper',
-
-  data: {
-    items: [],
-    hasError: true,
-    hasDeleted: true,
-    newItem: { 'name': '' }
-  },
-  mounted: function mounted() {
-    this.getVueItems();
-  },
-  methods: {
-    getVueItems: function getVueItems() {
-      var _this = this;
-
-      axios.get('/categories').then(function (response) {
-        _this.items = response.data;
-      });
-    },
-    createItem: function createItem() {
-      var _this2 = this;
-
-      var input = this.newItem;
-      if (input['name'] == '') {
-        this.hasError = false;
-        this.hasDeleted = true;
-      } else {
-        this.hasError = true;
-        axios.post('/categories', input).then(function (response) {
-          _this2.newItem = { 'name': '' };
-          _this2.getVueItems();
-        });
-        this.hasDeleted = true;
-      }
-    },
-    deleteItem: function deleteItem(item) {
-      var _this3 = this;
-
-      axios.post('/categories/' + item.id).then(function (response) {
-        _this3.getVueItems();
-        _this3.hasError = true, _this3.hasDeleted = false;
-      });
-    }
-  }
-});
-
-Vue.component('favorite', __webpack_require__(42));
-
-var app1 = new Vue({
-  //
-  el: '#app1'
-});
-
-/***/ }),
-/* 38 */,
-/* 39 */,
-/* 40 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 41 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41105,66 +41022,68 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['article', 'favorited'],
-
-    data: function data() {
-        return {
-            isFavorited: ''
-        };
+  props: {
+    pagination: {
+      type: Object,
+      required: true
     },
-
-    mounted: function mounted() {
-        this.isFavorited = this.isFavorite ? true : false;
-    },
-
-
-    computed: {
-        isFavorite: function isFavorite() {
-            return this.favorited;
-        }
-    },
-
-    methods: {
-        favorite: function favorite(article) {
-            var _this = this;
-
-            axios.post('/favorite/' + article).then(function (response) {
-                return _this.isFavorited = true;
-            }).catch(function (response) {
-                return console.log(response.data);
-            });
-        },
-        unFavorite: function unFavorite(article) {
-            var _this2 = this;
-
-            axios.post('/unfavorite/' + article).then(function (response) {
-                return _this2.isFavorited = false;
-            }).catch(function (response) {
-                return console.log(response.data);
-            });
-        }
+    offset: {
+      type: Number,
+      default: 4
     }
+  },
+  computed: {
+    pagesNumber: function pagesNumber() {
+      if (!this.pagination.to) {
+        return [];
+      }
+      var from = this.pagination.current_page - this.offset;
+      if (from < 1) {
+        from = 1;
+      }
+      var to = from + this.offset * 2;
+      if (to >= this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+      var pagesArray = [];
+      for (from = 1; from <= to; from++) {
+        pagesArray.push(from);
+      }
+      return pagesArray;
+    }
+  },
+  methods: {
+    changePage: function changePage(page) {
+      this.pagination.current_page = page;
+    }
+  }
 });
 
 /***/ }),
-/* 42 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(31)(
   /* script */
-  __webpack_require__(41),
+  __webpack_require__(34),
   /* template */
-  __webpack_require__(43),
+  __webpack_require__(36),
   /* scopeId */
   null,
   /* cssModules */
   null
 )
-Component.options.__file = "/home/janus/github/web-dev-lara/resources/assets/js/components/Favorite.vue"
+Component.options.__file = "/home/janus/github/web-dev-lara/resources/assets/js/components/Pagination.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] Favorite.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] Pagination.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -41173,9 +41092,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-1d36d8e5", Component.options)
+    hotAPI.createRecord("data-v-5b732fa3", Component.options)
   } else {
-    hotAPI.reload("data-v-1d36d8e5", Component.options)
+    hotAPI.reload("data-v-5b732fa3", Component.options)
   }
 })()}
 
@@ -41183,50 +41102,174 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 43 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', [(_vm.isFavorited) ? _c('a', {
+  return _c('ul', {
+    staticClass: "pagination"
+  }, [(_vm.pagination.current_page > 1) ? _c('li', [_c('a', {
     attrs: {
-      "href": "#"
+      "href": "#",
+      "aria-label": "Previous"
     },
     on: {
       "click": function($event) {
         $event.preventDefault();
-        _vm.unFavorite(_vm.article)
+        _vm.changePage(_vm.pagination.current_page - 1)
       }
     }
-  }, [_c('i', {
-    staticClass: "fa fa-heart"
-  })]) : _c('a', {
+  }, [_c('span', {
     attrs: {
-      "href": "#"
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("«")])])]) : _vm._e(), _vm._v(" "), _vm._l((_vm.pagesNumber), function(page) {
+    return _c('li', {
+      class: {
+        'active': page == _vm.pagination.current_page
+      }
+    }, [_c('a', {
+      attrs: {
+        "href": "#"
+      },
+      on: {
+        "click": function($event) {
+          $event.preventDefault();
+          _vm.changePage(page)
+        }
+      }
+    }, [_vm._v(_vm._s(page))])])
+  }), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('li', [_c('a', {
+    attrs: {
+      "href": "#",
+      "aria-label": "Next"
     },
     on: {
       "click": function($event) {
         $event.preventDefault();
-        _vm.favorite(_vm.article)
+        _vm.changePage(_vm.pagination.current_page + 1)
       }
     }
-  }, [_c('i', {
-    staticClass: "fa fa-heart-o"
-  })])])
+  }, [_c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("»")])])]) : _vm._e()], 2)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-1d36d8e5", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-5b732fa3", module.exports)
   }
 }
 
 /***/ }),
-/* 44 */
+/* 37 */,
+/* 38 */,
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(37);
-module.exports = __webpack_require__(40);
+__webpack_require__(26);
+
+Vue.component('vue-pagination', __webpack_require__(35));
+
+new Vue({
+
+    el: '#app',
+
+    data: {
+        items: [],
+        loading: false,
+        error: false,
+        query: ''
+    },
+
+    methods: {
+        search: function search() {
+            var _this = this;
+
+            // Clear the error message.
+            this.error = '';
+            // Empty the products array so we can fill it with the new products.
+            this.items = [];
+            // Set the loading property to true, this will display the "Searching..." button.
+            this.loading = true;
+
+            // Making a get request to our API and passing the query to it.
+            this.$http.get('/search?q=' + this.query).then(function (response) {
+                // If there was an error set the error message, if not fill the products array.
+                console.log(response);
+                //response.body.error ? this.error = response.body.error : this.items = response.body;
+                _this.items = response.data;
+                // The request is finished, change the loading to false again.
+                _this.loading = false;
+                // Clear the query.
+                _this.query = '';
+            });
+        }
+    }
+
+});
+
+// const  app = new Vue({
+//     el: '#app',
+//     data: {
+//         items: [],
+//         loading: false,
+//         error: false,
+//         query: ''
+//     },
+//     mounted : function() {
+//         this.getItems(this.pagination.current_page);
+//     },
+//     methods: {
+// search: function() {
+//             // Очистим сообщение об ошибке.
+//             this.error = '';
+//             // Опустошим набор данных.
+//             this.items = [];
+//             // Установим признак загрузки данных в true,  
+//             // для отображения процесса поиска "Searching...".
+//             this.loading = true;
+
+//             var _this = this;
+
+//             $.ajax({
+//                 url: '/search?q=' + this.query,
+//                 success: (response) => {
+//                    _this.items = response.data;
+//                    _this.pagination = response;
+//                    _this.loading = false;
+//                     // Очищаем поисковое слово.
+//                    _this.query = '';
+
+//                    this.getItems(_this.pagination.current_page);
+//                 }
+//             });
+
+//             // // делаем get запрос к нашему API и передаем в него поисковый запрос.
+//             // this.$http.get('/search?q=' + this.query).then((response) => {
+//             //     // Елси ошибки нет, заполняем массив products, в случае ошибки заполняем ее
+//             //     response.app.error ? this.error = response.app.error : this.items = response.app;
+//             //     // Запрос завершен. Меняем статус загрузки
+//             //     this.loading = false;
+//             //     // Очищаем поисковое слово.
+//             //     this.query = '';
+//             // });
+//         }
+
+/***/ }),
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(39);
 
 
 /***/ })

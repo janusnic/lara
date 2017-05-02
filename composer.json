@@ -6,17 +6,19 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "algolia/algoliasearch-client-php": "^1.17",
         "arrilot/laravel-widgets": "^3.7",
         "cviebrock/eloquent-sluggable": "^4.2",
         "dimsav/laravel-translatable": "^7.0",
+        "fzaninotto/faker": "^1.6",
         "laravel/framework": "5.4.*",
+        "laravel/scout": "^3.0",
         "laravel/socialite": "^3.0",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.3.0",
         "mews/purifier": "^2.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"
     },

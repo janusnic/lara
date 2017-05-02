@@ -11,16 +11,15 @@
 |
 */
 
-Route::get('/', 'IndexController@index');
+//Route::get('/', 'IndexController@index');
+Route::get('/', 'BlogController@index');
+
+Route::get('/blog','BlogApiController@index');
 
 Route::get ( '/cat', function () {
 	return view ( 'welcome' );
 } );
 
-
-Route::post ( '/vueitems', 'MainController@storeItem' );
-Route::get ( '/vueitems', 'MainController@readItems' );
-Route::post ( '/vueitems/{id}', 'MainController@deleteItem' );
 
 // Authentication Routes...
 $this->get('login', 'Auth\LoginController@showLoginForm')->name('auth.login');
@@ -57,6 +56,13 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 
+Route::get ( '/searchfor', function () {
+    return view ( 'search.index' );
+} );
+
+
+Route::get('search', 'SearchController@search')->name('api.search');
+
 //Route::resource('home', 'HomeController');
 Route::get('/cats', 'CategoryController@list');
 Route::get('/cats/{id}', 'CategoryController@show');
@@ -78,13 +84,3 @@ Route::post('favorite/{article}', 'ArticlesController@favoriteArticle');
 Route::post('unfavorite/{article}', 'ArticlesController@unFavoriteArticle');
 
 Route::get('my_favorites', 'UsersController@myFavorites')->middleware('auth');
-
-// Route::get('/admin/login',['as' => 'admin.login','uses' => 'Admin\LoginController@showLoginForm']);
-// Route::post('/admin/login',['uses' => 'Admin\LoginController@login']);
-// Route::post('/admin/logout',['as' => 'admin.logout','uses' => 'Admin\LoginController@logout']);
-
-// Auth::routes();
-// Route::get('/home', 'HomeController@index');
-// Route::get('/{slug}', 'FrontPageController@index');
-// Route::model('page', 'App\Page');
-// Route::resource('/admin/page', 'AdminPageController');

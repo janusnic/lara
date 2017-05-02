@@ -172,6 +172,10 @@ return [
          */
         Laravel\Tinker\TinkerServiceProvider::class,
 
+        Laravel\Scout\ScoutServiceProvider::class,
+
+        Cviebrock\EloquentSluggable\ServiceProvider::class,
+
         /*
          * Application Service Providers...
          */

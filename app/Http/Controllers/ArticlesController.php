@@ -66,7 +66,7 @@ use Purifier;
         $post = new Article;
 
         $post->title = $request->title;
-        $post->slug = str_slug($post->title);
+        // $post->slug = str_slug($post->title);
         $post->category_id = $request->category_id;
         $post->summary = $request->summary;
         $post->content = Purifier::clean($request->content);
@@ -136,7 +136,7 @@ use Purifier;
         $post = Article::find($id);;
         $post->title = $request->input('title');
 
-        $post->slug = str_slug($post->title);
+        // $post->slug = str_slug($post->title);
         $post->category_id = $request->input('category_id');
         $post->summary = $request->input('summary');
         $post->content = Purifier::clean($request->input('content'));

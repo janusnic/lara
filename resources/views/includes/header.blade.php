@@ -21,7 +21,9 @@
             <ul class="nav navbar-nav">
                 <li><a href="{{ URL::to('posts') }}">Blog</a></li>
                 <li><a href="{{ URL::to('/about') }}">About</a>
+                <li><a href="{{ URL::to('/searchfor') }}">Search</a>
             </ul>
+            
 
             <!-- Right Side Of Navbar -->
             <ul class="nav navbar-nav navbar-right">

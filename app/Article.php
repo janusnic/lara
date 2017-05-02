@@ -3,6 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
+
+use Cviebrock\EloquentSluggable\Sluggable;
+
 use App\Favorite;
 use Illuminate\Support\Facades\Auth;
 use App\User;
@@ -11,6 +15,42 @@ use App\Comment;
 
 class Article extends Model
 {
+    
+    use Searchable;
+
+    use Sluggable;
+
+    protected $sluggable = array(
+        'build_from' => 'title',
+        'save_to'    => 'slug',
+        'separator'       => '_',
+        'unique'          => true
+    );
+
+    protected $fillable = [
+        'slug',
+        'title',
+        'summary',
+        'content',
+        'category_id',
+        'user_id',
+        'seo_title',
+        'seo_desc',
+        'seo_key'
+    ];
+
+    public function sluggable()
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
+    }
+
+    protected $dates = ['published_at'];
+
+    
     public function category()
     {
     	//return $this->belongsTo('App\Category');

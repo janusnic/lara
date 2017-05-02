@@ -1,5 +1,11 @@
 
 window._ = require('lodash');
+window.Vue = require('vue');
+window.axios = require('axios');
+
+//import Vue from 'vue';
+
+//import axios from 'axios';
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -17,7 +23,7 @@ require('bootstrap-sass');
  * and simple, leaving you to focus on building your next great project.
  */
 
-window.Vue = require('vue');
+//window.Vue = require('vue');
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -25,12 +31,23 @@ window.Vue = require('vue');
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+//window.axios = require('axios');
+
+//window.axios.defaults.headers.common = {
 
 window.axios.defaults.headers.common = {
     'X-CSRF-TOKEN': window.Laravel.csrfToken,
     'X-Requested-With': 'XMLHttpRequest'
 };
+
+
+
+window.axios.interceptors.request.use(function(config){
+    config.headers['X-CSRF-TOKEN'] = Laravel.csrfToken
+    return config;
+});
+
+window.Vue.prototype.$http = axios;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
